@@ -11,7 +11,7 @@ class DecisionTree extends StatefulWidget {
 }
 
 class _DecisionTreeState extends State<DecisionTree> {
-  late User user;
+  User? user;
   @override
   void initState(){
     super.initState();
