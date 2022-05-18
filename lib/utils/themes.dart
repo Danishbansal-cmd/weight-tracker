@@ -29,18 +29,39 @@ class MyThemes {
           secondary: Colors.black,
         ),
         textTheme: const TextTheme(
-          headline1: TextStyle(
+          headline1: const TextStyle(
             color: Colors.white,
           ),
-          headline2: TextStyle(
+          headline2:const TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
             color: Colors.orange,
           ),
-          headline6: TextStyle(
+          headline6: const TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.normal,
             fontSize: 15,
+          ),
+          headline3: const TextStyle(
+            color: Color(0xffA59E9E),
+            fontSize: 33,
+            fontFamily: 'Alatsi-Regular'
+          ),
+          headline4: const TextStyle(
+            color: Color(0xff676363),
+            fontSize: 24,
+            fontFamily: 'Alatsi-Regular'
+          ),
+          headline5: const TextStyle(
+            color: Colors.deepPurple,
+            fontSize: 20,
+            fontFamily: 'Alegreya_Sans_SC'
+          ),
+          button: TextStyle(
+            fontFamily: 'Jua',
+            fontSize: 22,
+            color: Colors.white,
+            letterSpacing: 1.1,
           ),
         ),
         fontFamily: GoogleFonts.lato().fontFamily,

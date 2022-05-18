@@ -1,12 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:try1_something/all_notifiers.dart/welcom_notifier.dart';
 import 'package:try1_something/pages/home_page.dart';
 import 'package:try1_something/pages/signup_page.dart';
 import 'package:try1_something/utils/themes.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key? key}) : super(key: key);
@@ -22,6 +22,9 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController emailsController = TextEditingController();
   TextEditingController passwordsController = TextEditingController();
 
+  //creating controller
+  final loginPageStateController = Get.put(LoginPageState());
+
   bool changeButton = false;
   final _formKey = GlobalKey<FormState>();
   final _auth = FirebaseAuth.instance;
@@ -29,16 +32,16 @@ class _LoginPageState extends State<LoginPage> {
   FocusNode node1 = new FocusNode();
   FocusNode node2 = new FocusNode();
 
-  moveToHome(BuildContext context) async {
-    signIn();
-    setState(() {
-      changeButton = true;
-    });
-    await Future.delayed(Duration(seconds: 1));
-    setState(() {
-      changeButton = false;
-    });
-  }
+  // moveToHome(BuildContext context) async {
+  //   signIn();
+  //   setState(() {
+  //     changeButton = true;
+  //   });
+  //   await Future.delayed(Duration(seconds: 1));
+  //   setState(() {
+  //     changeButton = false;
+  //   });
+  // }
 
   @override
   void initState() {
@@ -58,7 +61,6 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     final _colorScheme = Theme.of(context).colorScheme;
     final _textTheme = Theme.of(context).textTheme;
-    final welcomeProvider = Provider.of<WelcomeNotifier>(context);
 
     // we call also wrap safearea with material
     return SafeArea(
@@ -73,29 +75,38 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               // mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                //Logo box
+                SizedBox(
+                  height: (MediaQuery.of(context).size.height / 10) * 4,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      "WeightTracker"
+                          .text
+                          .xl4
+                          .bold
+                          .color(Colors.deepPurple)
+                          .center
+                          .makeCentered(),
+                      Text(
+                        "weigh every moment",
+                        style: _textTheme.headline6?.copyWith(
+                            wordSpacing: 12,
+                            letterSpacing: 2,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ),
+
+                //form box
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    "WeightTracker"
-                        .text
-                        .xl4
-                        .bold
-                        .color(Colors.deepPurple)
-                        .center
-                        .makeCentered(),
-                    Text(
-                      "weigh every moment",
-                      style: _textTheme.headline6?.copyWith(
-                          wordSpacing: 12,
-                          letterSpacing: 2,
-                          fontWeight: FontWeight.bold),
+                    Obx(
+                      () => Text(
+                          "Welcome ${loginPageStateController.loginEmailValue.value}"),
                     ),
-                  ],
-                ).h40(context),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text("Welcome ${welcomeProvider.text}"),
                     TextFormField(
                       focusNode: node1,
                       controller: emailsController,
@@ -103,7 +114,7 @@ class _LoginPageState extends State<LoginPage> {
                       textInputAction: TextInputAction.next,
                       onFieldSubmitted: (_) {
                         FocusScope.of(context).requestFocus(node2);
-                        setState(() {});
+                        // setState(() {});
                       },
                       decoration: InputDecoration(
                         hintText: "Enter Email",
@@ -125,8 +136,9 @@ class _LoginPageState extends State<LoginPage> {
                         return null;
                       },
                       onChanged: (value) {
-                        emails = emailsController.text;
-                        welcomeProvider.onChangeEmail(value);
+                        // emails = emailsController.text;
+                        // welcomeProvider.onChangeEmail(value);
+                        loginPageStateController.loginEmailValue.value = value;
                       },
                     ),
                     TextFormField(
@@ -155,20 +167,21 @@ class _LoginPageState extends State<LoginPage> {
                         passwords = passwordsController.text;
                       },
                     ),
-                    10.heightBox,
+                    SizedBox(height: 10,),
                     Text(
                       "Forgot Password?",
                       style: _textTheme.headline6,
                       textAlign: TextAlign.right,
                     ).wThreeForth(context),
-                    30.heightBox,
+                    SizedBox(height: 30,),
                     Material(
                       color: Colors.deepPurple,
                       borderRadius: BorderRadius.circular(50),
                       child: InkWell(
                         borderRadius: BorderRadius.circular(50),
                         onTap: () {
-                          signIn();
+                          signIn(
+                              emailsController.text, passwordsController.text);
 
                           // moveToHome(context);
                         },
@@ -180,7 +193,7 @@ class _LoginPageState extends State<LoginPage> {
                               ? 50
                               : MediaQuery.of(context).size.width,
                           child: changeButton
-                              ?const Icon(
+                              ? const Icon(
                                   Icons.done,
                                   color: Colors.white,
                                 )
@@ -188,7 +201,11 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                     ),
-                    10.heightBox,
+                    SizedBox(
+                      height: 10,
+                    ),
+
+                    //
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -207,9 +224,11 @@ class _LoginPageState extends State<LoginPage> {
                               .text
                               .bold
                               .color(Colors.deepPurple)
-                              .textStyle(const TextStyle(
-                                fontSize: 15,
-                              ))
+                              .textStyle(
+                                const TextStyle(
+                                  fontSize: 15,
+                                ),
+                              )
                               .make(),
                         ),
                       ],
@@ -224,10 +243,11 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  //animation to jump from one page to another for signup and signin
   Route _createRoute() {
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => SignupPage(),
-      transitionDuration:const Duration(milliseconds: 600),
+      transitionDuration: const Duration(milliseconds: 600),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         var begin = Offset(0.0, 1.0);
         var end = Offset.zero;
@@ -244,7 +264,8 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  void signIn() async {
+  //sign in function
+  void signIn(String emails, String passwords) async {
     print("begin to work");
     if (_formKey.currentState!.validate()) {
       setState(() {
@@ -256,13 +277,19 @@ class _LoginPageState extends State<LoginPage> {
                 changeButton = true,
                 ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: "Signed in successfully".text.make())),
+                loginPageStateController.loginEmailValue.value = '',
+                    
                 Navigator.of(context).pushReplacement(
                     MaterialPageRoute(builder: (context) => HomePage())),
               })
           .catchError((Object error) {
-        print("cath erro wordks");
+        print("cath error works");
         Fluttertoast.showToast(msg: "not getting anything");
       });
     }
   }
+}
+
+class LoginPageState extends GetxController {
+  RxString loginEmailValue = ''.obs;
 }
