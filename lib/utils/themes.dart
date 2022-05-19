@@ -17,7 +17,7 @@ class ThemeManager extends ChangeNotifier {
 
 class MyThemes {
   static ThemeData get lightTheme => ThemeData(
-        primaryColor: Colors.deepPurple,
+        primaryColor: Color(0xFF673AB7),
         appBarTheme: const AppBarTheme(
           color: Colors.deepPurple,
         ),

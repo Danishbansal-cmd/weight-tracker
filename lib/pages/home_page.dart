@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:try1_something/functions/my_drawer.dart';
 import 'package:try1_something/main.dart';
@@ -22,21 +24,23 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  //
   User? user = FirebaseAuth.instance.currentUser;
   UserModel loggedInUser = UserModel();
   String unit = 'KG';
-
   String weightValue = '';
-
   // double testing = 2334;
   final _formKey = GlobalKey<FormState>();
-
   TextEditingController weightController = TextEditingController();
-
   // late Stream<QuerySnapshot> snapshot;
   bool isLoading = true;
-
+  bool isLoading2 = true;
   FocusNode mynode = new FocusNode();
+  // List<dayAndWeightDataModel> dayAndWeightData = [];
+
+  //
+  //initializing controller
+  final homePageController = Get.put(HomePageController());
 
   @override
   void initState() {
@@ -55,19 +59,38 @@ class _HomePageState extends State<HomePage> {
           });
         },
       );
+      Future.delayed(
+        Duration(seconds: 6),
+        () {
+          // print('dayAndWeightDatalength ${dayAndWeightData!.length}');
+          setState(() {
+            isLoading2 = false;
+          });
+        },
+      );
       super.initState();
     });
 
     //IMPORTANT METHOD
     //GETTING DATA FROM SERVER (FIRST METHOD)
-    // final _auth = FirebaseAuth.instance.currentUser;
-    // final CollectionReference firebaseFirestore = FirebaseFirestore.instance
-    //   .collection("users")
-    //   .doc(_auth!.uid)
-    //   .collection("weights");
-    // firebaseFirestore.get().then((value) =>
-    //   value.docs.forEach((element) {print(element['weight']);}),
-    // );
+    final _auth = FirebaseAuth.instance.currentUser;
+    final CollectionReference firebaseFirestore = FirebaseFirestore.instance
+        .collection("users")
+        .doc(user!.uid)
+        .collection("weights");
+    firebaseFirestore.get().then(
+          (value) => value.docs.forEach((element) {
+            homePageController.dayAndWeightData.add(
+              dayAndWeightDataModel(
+                day: element.id.substring(8, 10),
+                weight: element['weight'],
+              ),
+            );
+            print('each data ${element['weight']}');
+            print('each data id ${element.id.runtimeType}');
+          }),
+        );
+    print('dayAndWeightData ${homePageController.dayAndWeightData}');
 
     // setState(() {
 
@@ -145,6 +168,70 @@ class _HomePageState extends State<HomePage> {
           body: Container(
             child: Column(
               children: [
+                //
+                //Progress column
+                Stack(
+                  children: [
+                    //
+                    //main container to hold all
+                    //chart data
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 7,
+                        vertical: 7,
+                      ),
+                      margin: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                      ).copyWith(
+                        top: 10,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.white,
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Color.fromARGB(17, 0, 0, 0),
+                            blurRadius: 10.0,
+                            spreadRadius: 6.0,
+                            offset: Offset(0.0, 0.0),
+                          ),
+                        ],
+                      ),
+                      height: 220,
+                      child: returnLineChartOfWeights(),
+                    ),
+
+                    //
+                    //container to show
+                    //circular progress bar on it
+                    Obx(
+                      () => Visibility(
+                        visible: homePageController.dayAndWeightData.isEmpty,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 7,
+                            vertical: 7,
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.white,
+                          ),
+                          margin: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                          ).copyWith(
+                            top: 10,
+                          ),
+                          height: 220,
+                          width: MediaQuery.of(context).size.width,
+                          child: Center(
+                            child: CircularProgressIndicator(backgroundColor: Colors.red,),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
                 // //GETTING DATA FROM SERVER (SECOND METHOD)
                 // StreamBuilder<QuerySnapshot>(
                 //   stream: FirebaseFirestore.instance
@@ -225,7 +312,7 @@ class _HomePageState extends State<HomePage> {
                 //   },
                 // ),
 
-                //ANOTHER STREM BUILDER
+                //ANOTHER STREAM BUILDER
                 isLoading
                     ? Expanded(
                         child: ListView.separated(
@@ -242,6 +329,8 @@ class _HomePageState extends State<HomePage> {
                             .snapshots(),
                         builder: (context, AsyncSnapshot snapshot) {
                           if (!snapshot.hasData) {
+                            //adding data to this list(dayAndWeightData)
+
                             return Expanded(
                               child: ListView.separated(
                                 physics: const ScrollPhysics(
@@ -255,6 +344,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                             );
                           }
+
                           return ListView.builder(
                             physics: const ScrollPhysics(
                               parent: BouncingScrollPhysics(),
@@ -286,7 +376,10 @@ class _HomePageState extends State<HomePage> {
                                         .collection("users")
                                         .doc(user!.uid)
                                         .collection("weights")
-                                        .doc(item.id).delete().then((value) => print("success\nsuccess\nsuccesnsuccess"));
+                                        .doc(item.id)
+                                        .delete()
+                                        .then((value) => print(
+                                            "success\nsuccess\nsuccesnsuccess"));
                                   });
                                 },
                                 direction: DismissDirection.endToStart,
@@ -299,6 +392,7 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                   child: Row(
                                     children: [
+                                      //
                                       //FIRST CIRCLE
                                       Container(
                                         height: 100,
@@ -743,62 +837,292 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-
   Widget slideLeftBackground() {
-  return Container(
-    color: Colors.red,
-    child: Align(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: const <Widget>[
-          Icon(
-            Icons.delete,
-            color: Colors.white,
-          ),
-          Text(
-            " Delete",
-            style: TextStyle(
+    return Container(
+      color: Colors.red,
+      child: Align(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: const <Widget>[
+            Icon(
+              Icons.delete,
               color: Colors.white,
-              fontWeight: FontWeight.w700,
             ),
-            textAlign: TextAlign.right,
-          ),
-          SizedBox(
-            width: 20,
-          ),
-        ],
+            Text(
+              " Delete",
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w700,
+              ),
+              textAlign: TextAlign.right,
+            ),
+            SizedBox(
+              width: 20,
+            ),
+          ],
+        ),
+        alignment: Alignment.centerRight,
       ),
-      alignment: Alignment.centerRight,
-    ),
-  );
+    );
+  }
+
+  Widget slideRightBackground() {
+    return Container(
+      color: Colors.green,
+      child: Align(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: const <Widget>[
+            SizedBox(
+              width: 20,
+            ),
+            Icon(
+              Icons.edit,
+              color: Colors.white,
+            ),
+            Text(
+              " Edit",
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w700,
+              ),
+              textAlign: TextAlign.left,
+            ),
+          ],
+        ),
+        alignment: Alignment.centerLeft,
+      ),
+    );
+  }
+
+  //return data of weights
+  Widget returnLineChartOfWeights() {
+    return LineChart(
+      // LineChartData(
+      //   borderData: FlBorderData(show: false),
+      //   lineBarsData: [
+      //     LineChartBarData(
+      //       isCurved: true,
+      //       spots: [
+      //         const FlSpot(0, 1),
+      //         const FlSpot(1, 3),
+      //         const FlSpot(2, 10),
+      //         const FlSpot(3, 7),
+      //         const FlSpot(4, 12),
+      //         const FlSpot(5, 13),
+      //         const FlSpot(6, 17),
+      //         const FlSpot(7, 15),
+      //         const FlSpot(8, 20)
+      //       ],
+      //     ),
+      //   ],
+      // ),
+      mainData(),
+    );
+  }
+
+  Widget bottomTitleWidgets(double value, TitleMeta meta) {
+    const style = TextStyle(
+      color: Color(0xff68737d),
+      fontWeight: FontWeight.bold,
+      fontSize: 11,
+    );
+    Widget text;
+    switch (value.toInt()) {
+      case 0:
+        text = const Text('MAR', style: style);
+        break;
+      case 3:
+        text = const Text('3', style: style);
+        break;
+      case 6:
+        text = const Text('6', style: style);
+        break;
+      case 9:
+        text = const Text('9', style: style);
+        break;
+      case 12:
+        text = const Text('12', style: style);
+        break;
+      case 15:
+        text = const Text('15', style: style);
+        break;
+      case 18:
+        text = const Text('18', style: style);
+        break;
+      case 21:
+        text = const Text('21', style: style);
+        break;
+      case 24:
+        text = const Text('24', style: style);
+        break;
+      case 27:
+        text = const Text('27', style: style);
+        break;
+      case 30:
+        text = const Text('30', style: style);
+        break;
+      default:
+        text = const Text('', style: style);
+        break;
+    }
+
+    return Padding(child: text, padding: const EdgeInsets.only(top: 8.0));
+  }
+
+  Widget leftTitleWidgets(double value, TitleMeta meta) {
+    const style = TextStyle(
+      color: Color(0xff67727d),
+      fontWeight: FontWeight.bold,
+
+      fontSize: 11,
+    );
+    String text;
+    switch (value.toInt()) {
+      case 0:
+        text = 'KG';
+        break;
+      case 30:
+        text = '30';
+        break;
+      case 60:
+        text = '60';
+        break;
+      case 90:
+        text = '90';
+        break;
+      case 120:
+        text = '120';
+        break;
+      case 150:
+        text = '150';
+        break;
+      case 180:
+        text = '180';
+        break;
+      case 210:
+        text = '210';
+        break;
+      default:
+        return Container();
+    }
+
+    return Text(text, style: style, textAlign: TextAlign.left);
+  }
+
+  LineChartData mainData() {
+    //testing data for charts
+    List<Color> gradientColors = [
+      const Color(0xff23b6e6),
+      const Color(0xff02d39a),
+    ];
+
+    return LineChartData(
+      gridData: FlGridData(
+        show: true,
+        drawVerticalLine: true,
+        horizontalInterval: 10,
+        verticalInterval: 1,
+        getDrawingHorizontalLine: (value) {
+          return FlLine(
+            color: const Color(0xff37434d),
+            strokeWidth: 1,
+          );
+        },
+        getDrawingVerticalLine: (value) {
+          return FlLine(
+            color: const Color(0xff37434d),
+            strokeWidth: 1,
+          );
+        },
+      ),
+      titlesData: FlTitlesData(
+        show: true,
+        rightTitles: AxisTitles(
+          sideTitles: SideTitles(showTitles: false),
+        ),
+        topTitles: AxisTitles(
+          sideTitles: SideTitles(showTitles: false),
+        ),
+        bottomTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: true,
+            reservedSize: 20,
+            interval: 1,
+            getTitlesWidget: bottomTitleWidgets,
+          ),
+        ),
+        leftTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: true,
+            interval: 1,
+            getTitlesWidget: leftTitleWidgets,
+            reservedSize: 28,
+          ),
+        ),
+      ),
+      borderData: FlBorderData(
+        show: true,
+        border: Border.all(
+          color: const Color(0xff37434d),
+          width: 1,
+        ),
+      ),
+      minX: 0,
+      minY: 0,
+      maxX: 31,
+      maxY: 200,
+      lineBarsData: [
+        LineChartBarData(
+          spots: List<FlSpot>.generate(
+            homePageController.dayAndWeightData.length,
+            (index) => FlSpot(
+              double.parse(homePageController.dayAndWeightData[index].day!),
+              homePageController.dayAndWeightData[index].weight!,
+            ),
+          ),
+          // const [
+          //   FlSpot(0, 3),
+          //   FlSpot(2.6, 2),
+          //   FlSpot(4.9, 5),
+          //   FlSpot(6.8, 3.1),
+          //   FlSpot(8, 4),
+          //   FlSpot(9.5, 3),
+          //   FlSpot(11, 4),
+          // ],
+          isCurved: true,
+          gradient: LinearGradient(
+            colors: gradientColors,
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+          ),
+          barWidth: 5,
+          isStrokeCapRound: true,
+          dotData: FlDotData(
+            show: false,
+          ),
+          belowBarData: BarAreaData(
+            show: true,
+            gradient: LinearGradient(
+              colors: gradientColors
+                  .map((color) => color.withOpacity(0.3))
+                  .toList(),
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 }
 
-Widget slideRightBackground() {
-  return Container(
-    color: Colors.green,
-    child: Align(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: const <Widget>[
-          SizedBox(
-            width: 20,
-          ),
-          Icon(
-            Icons.edit,
-            color: Colors.white,
-          ),
-          Text(
-            " Edit",
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.w700,
-            ),
-            textAlign: TextAlign.left,
-          ),
-        ],
-      ),
-      alignment: Alignment.centerLeft,
-    ),
-  );
+class dayAndWeightDataModel {
+  String? day;
+  double? weight;
+  dayAndWeightDataModel({this.day, this.weight});
 }
+
+class HomePageController extends GetxController {
+  List<dayAndWeightDataModel> dayAndWeightData = <dayAndWeightDataModel>[].obs;
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:try1_something/functions/decision_tree.dart';
+import 'package:try1_something/pages/body_mass_index.dart';
 import 'package:try1_something/pages/first_page.dart';
 import 'package:try1_something/pages/login_page.dart';
 import 'package:try1_something/pages/home_page.dart';
@@ -53,6 +54,7 @@ class MyApp extends StatelessWidget {
               GetPage(name: '/signupPage', page: () =>const SignupPage()),
               GetPage(name: '/homePage', page: () =>const HomePage()),
               GetPage(name: '/settingsPage', page: () => SettingsPage()),
+              GetPage(name: '/bodyMassIndexPage', page: () => const BodyMassIndexPage()),
             ],
 
             routes: {

@@ -46,22 +46,22 @@ class _SettingsPageState extends State<SettingsPage> {
       child: SafeArea(
         child: Scaffold(
           appBar: AppBar(
-            title: "Settings"
-                .text
-                .bold
-                .textStyle(
-                  const TextStyle(
-                    fontSize: 16,
-                  ),
-                )
-                .make(),
-          ),
+              title: Text(
+            "Settings",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            ),
+          )),
           body: Container(
-            color: Vx.gray200,
+            color: Colors.grey.shade200,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 4,
+                  ),
                   child: Column(
                     children: [
                       Container(
@@ -73,8 +73,8 @@ class _SettingsPageState extends State<SettingsPage> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            "E-mail address".text.make(),
-                            "${loggedInUsers.email}".text.make(),
+                            Text("E-mail address"),
+                            Text("${loggedInUsers.email}"),
                           ],
                         ),
                       ),
@@ -89,7 +89,7 @@ class _SettingsPageState extends State<SettingsPage> {
                               padding: EdgeInsets.symmetric(
                                 vertical: addNumber ? 0 : 15,
                               ),
-                              child: "Phone number".text.make(),
+                              child: Text("Phone number"),
                             ),
                             Row(
                               children: [
@@ -116,8 +116,10 @@ class _SettingsPageState extends State<SettingsPage> {
                                           ),
                                         ),
                                       )
-                                    : "".text.make(),
-                                20.widthBox,
+                                    : Text(''),
+                                SizedBox(
+                                  height: 20,
+                                ),
                                 loggedInUsers.phoneNumber?.length == 0
                                     ? InkWell(
                                         onTap: () {
@@ -127,15 +129,15 @@ class _SettingsPageState extends State<SettingsPage> {
                                         child: Container(
                                           padding: const EdgeInsets.symmetric(
                                               horizontal: 10, vertical: 6),
-                                          child: "ADD".text.make(),
+                                          child: Text("ADD"),
                                           decoration: BoxDecoration(
                                             borderRadius:
                                                 BorderRadius.circular(5),
-                                            color: Vx.gray200,
+                                            color: Colors.grey.shade200,
                                           ),
                                         ),
                                       )
-                                    : "".text.make(),
+                                    : Text(''),
                               ],
                             ),
                           ],
@@ -151,40 +153,38 @@ class _SettingsPageState extends State<SettingsPage> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            "Password".text.make(),
+                            Text("Password"),
                           ],
                         ),
                       ),
                     ],
                   ),
-                ).py(4),
+                ),
 
                 // LANGUAGE SETTINGS
                 Container(
                   color: Colors.white,
                   padding:
-                      const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                      const EdgeInsets.symmetric(vertical: 20, horizontal: 20)
+                          .copyWith(top: 4),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                        child: "Language settings"
-                            .text
-                            .bold
-                            .textStyle(
-                              const TextStyle(
-                                color: Colors.grey,
-                                fontSize: 16,
-                              ),
-                            )
-                            .make(),
+                      const Text(
+                        "Language settings",
+                        style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold),
                       ),
                       Container(
+                        margin: const EdgeInsets.only(top: 8),
                         padding:
-                            EdgeInsets.symmetric(vertical: 3, horizontal: 3),
+                            EdgeInsets.symmetric(vertical: 3, horizontal: 3)
+                                ,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5),
-                          color: Vx.gray200,
+                          color: Colors.grey.shade200,
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -193,37 +193,47 @@ class _SettingsPageState extends State<SettingsPage> {
                             toggleButton(context, "German"),
                           ],
                         ),
-                      ).pOnly(top: 8),
+                      ),
                     ],
                   ),
-                ).pOnly(bottom: 4),
+                ),
 
                 //UNIT SETTINGS
                 Container(
                   color: Colors.white,
                   padding:
                       const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      "Weigh your weight in"
-                          .text
-                          .bold
-                          .textStyle(
-                            const TextStyle(
-                              color: Colors.grey,
-                              fontSize: 16,
-                            ),
-                          )
-                          .make(),
-                      Container(
-                        child: InkWell(
-                          onTap: () {},
-                          child: "Kg".text.make(),
+                  child: Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Weigh your weight in",
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      )
-                    ],
-                  ).expand(),
+                        Container(
+                          child: InkWell(
+                            onTap: () {
+                              showModalBottomSheet(
+                                      // isDismissible: false,
+                                      // enableDrag: false,
+                                      isScrollControlled: true,
+                                      backgroundColor: Colors.transparent,
+                                      context: context,
+                                      builder: (BuildContext context) =>
+                                          chooseWeightUnit(context),
+                                    );
+                            },
+                            child: Text("Kg"),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -234,8 +244,8 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Widget fucntionDivider() {
-    return const Divider(
-      color: Vx.gray300, //color of divider
+    return Divider(
+      color: Colors.grey.shade300, //color of divider
       height: 1, //height spacing of divider
       thickness: 1, //thickness of divier line
       // indent: 25, //spacing at the start of divider
@@ -254,11 +264,14 @@ class _SettingsPageState extends State<SettingsPage> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(5),
           color: (value != "German")
-              ? (whichLanguage ? Colors.white : Vx.gray200)
-              : (whichLanguage ? Vx.gray200 : Colors.white),
+              ? (whichLanguage ? Colors.white : Colors.grey.shade200)
+              : (whichLanguage ? Colors.grey.shade200 : Colors.white),
         ),
         width: (MediaQuery.of(context).size.width - 46) / 2,
-        child: value.text.center.make(),
+        child: Text(
+          value,
+          textAlign: TextAlign.center,
+        ),
       ),
     );
   }
@@ -270,7 +283,7 @@ class _SettingsPageState extends State<SettingsPage> {
         return Material(
           child: Container(
             child: ListView.builder(itemBuilder: (BuildContext context, index) {
-              return "gy".text.make();
+              return Text('gy');
             }),
           ),
         );

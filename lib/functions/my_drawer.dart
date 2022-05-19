@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:try1_something/pages/login_page.dart';
 import 'package:try1_something/routes/routes.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -67,6 +68,23 @@ class MyDrawer extends StatelessWidget {
                     Icon(CupertinoIcons.settings_solid, color: Colors.white),
                 title: Text(
                   "Settings",
+                  textScaleFactor: 1.2,
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+            InkWell(
+              onTap: () {
+                Get.back();
+                Get.toNamed('/bodyMassIndexPage');
+              },
+              child: const ListTile(
+                leading:
+                    Icon(CupertinoIcons.settings_solid, color: Colors.white),
+                title: Text(
+                  "Bosdfasdf as sad ",
                   textScaleFactor: 1.2,
                   style: TextStyle(
                     color: Colors.white,
