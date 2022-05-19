@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:try1_something/models/user_model.dart';
 import 'package:velocity_x/velocity_x.dart';
 
@@ -17,6 +18,29 @@ class _SettingsPageState extends State<SettingsPage> {
 
   final user = FirebaseAuth.instance.currentUser;
   UserModel loggedInUsers = UserModel();
+
+  //
+  //initializing controller
+  final settingsPageController = Get.put(SettingsPageController());
+
+  //BASIC UNIT IS KG
+    final Map MassList = {
+      "Tonne": ["Tonne", "t", 1000000.0],
+      "Kilogram": ["Kilogram", "kg", 1000.0],
+      "Gram": ["Gram", "g", 1.0],
+      "Milligram": ["Milligram", "mg", 0.001],
+      "Microgram": ["Microgram", "µg", 0.000001],
+      "Quintal": ["Quintal", "q", 100000.0],
+      "Pound": ["Pound", "lb", 453.59237],
+      "Ounce": ["Ounce", "oz", 28.3495231],
+      "Carat": ["Carat", "ct", 0.2],
+      "Grain": ["Grain", "gr", 0.06479891],
+      "Stone": ["Stone", "st", 6350.29317],
+      "Dram": ["Dram", "dr", 1.7718452],
+      "Dan": ["Dan", "dan", 50000.0],
+      "Jin": ["Jin", "jin", 500],
+      "Qian": ["Qian", "qian", 5.0],
+    };
 
   @override
   void initState() {
@@ -228,7 +252,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                           chooseWeightUnit(context),
                                     );
                             },
-                            child: Text("Kg"),
+                            child: Text(MassList[settingsPageController.currentWeightValue.value][1]),
                           ),
                         )
                       ],
@@ -295,4 +319,102 @@ class _SettingsPageState extends State<SettingsPage> {
     Navigator.pop(context);
     setState(() {});
   }
+
+  Widget chooseWeightUnit(context) {
+    final _colorScheme = Theme.of(context).colorScheme;
+
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        Navigator.of(context).pop();
+      },
+      child: GestureDetector(
+        onTap: () {},
+        child: DraggableScrollableSheet(
+          initialChildSize: 0.55,
+          minChildSize: 0.55,
+          maxChildSize: 0.55,
+          builder: (_, controller) => Container(
+            decoration: BoxDecoration(
+              color: _colorScheme.background,
+              borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(20), topRight: Radius.circular(20),),
+            ),
+            child: Column(
+              children: [
+                //
+                // MODAL HEADING
+                Container(
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20)),
+                  ),
+                  height: 60,
+                  child: "Select Unit"
+                      .text
+                      .textStyle(
+                        const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                      )
+                      .make()
+                      .centered(),
+                ),
+                //
+                // UNITS LIST
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: ListView.builder(
+                      // controller: controller,
+                      physics: const ScrollPhysics(
+                        parent: BouncingScrollPhysics(),
+                      ),
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        return InkWell(onTap: (){
+                          settingsPageController.currentWeightValue.value = MassList[MassList.keys.toList()[index]][0];
+                        },child: Container(padding: const EdgeInsets.only(left: 30, top: 25, bottom: 25),child: Text(MassList[MassList.keys.toList()[index]][0]),),);
+                      },
+                      itemCount: MassList.length,
+                    ),
+                  ),
+                ),
+                //
+                // // CANCEL MODAL BUTTON
+                InkWell(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    child: "Cancel".text.center.bold.make().py(13),
+                    decoration: BoxDecoration(
+                      color: Colors.deepPurple,
+                      border: Border.all(
+                        width: 1,
+                        color: Colors.deepPurple,
+                      ),
+                      borderRadius: BorderRadius.circular(60),
+                    ),
+                  ).pSymmetric(v: 20, h: 50),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+
+
+}
+
+
+class SettingsPageController extends GetxController{
+  RxString currentWeightValue = 'Kilogram'.obs;
+
 }
