@@ -61,7 +61,7 @@ class MyDrawer extends StatelessWidget {
             InkWell(
               onTap: () {
                 Navigator.pop(context);
-                Navigator.pushNamed(context, MyRoutes.settingsPage);
+                Get.toNamed('/settingsPage',arguments: {'email':email});
               },
               child: const ListTile(
                 leading:

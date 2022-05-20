@@ -16,7 +16,7 @@ class UserModel {
       email: map['email'],
       firstName: map['firstName'],
       secondName: map['secondName'],
-      phoneNumber: map['phoneNumber'],
+      phoneNumber: map['phoneNumber'].toString(),
     );
   }
 

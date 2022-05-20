@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:try1_something/models/user_model.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -14,33 +16,32 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   bool whichLanguage = true;
-  bool addNumber = false;
+  bool addNumber = true;
 
   final user = FirebaseAuth.instance.currentUser;
   UserModel loggedInUsers = UserModel();
 
   //
   //initializing controller
-  final settingsPageController = Get.put(SettingsPageController());
+  final SettingsPageController settingsPageController = Get.put(SettingsPageController());
+  //textformfield variables
+  TextEditingController phoneNumberController = TextEditingController();
+  FocusNode phoneNumberNode = FocusNode();
 
   //BASIC UNIT IS KG
-    final Map MassList = {
-      "Tonne": ["Tonne", "t", 1000000.0],
-      "Kilogram": ["Kilogram", "kg", 1000.0],
-      "Gram": ["Gram", "g", 1.0],
-      "Milligram": ["Milligram", "mg", 0.001],
-      "Microgram": ["Microgram", "µg", 0.000001],
-      "Quintal": ["Quintal", "q", 100000.0],
-      "Pound": ["Pound", "lb", 453.59237],
-      "Ounce": ["Ounce", "oz", 28.3495231],
-      "Carat": ["Carat", "ct", 0.2],
-      "Grain": ["Grain", "gr", 0.06479891],
-      "Stone": ["Stone", "st", 6350.29317],
-      "Dram": ["Dram", "dr", 1.7718452],
-      "Dan": ["Dan", "dan", 50000.0],
-      "Jin": ["Jin", "jin", 500],
-      "Qian": ["Qian", "qian", 5.0],
-    };
+  final Map MassList = {
+    "Tonne": ["Tonne", "t", 1000.0],
+    "Kilogram": ["Kilogram", "kg", 1.0],
+    "Gram": ["Gram", "g", 0.001],
+    "Milligram": ["Milligram", "mg", 0.000001],
+    "Microgram": ["Microgram", "µg", 0.000000001],
+    "Quintal": ["Quintal", "q", 100.0],
+    "Pound": ["Pound", "lb", 0.453592],
+    "Ounce": ["Ounce", "oz", 0.0283495],
+    "Carat": ["Carat", "ct", 0.0002],
+    "Grain": ["Grain", "gr", 0.00006479891],
+    "Stone": ["Stone", "st", 6.35029317],
+  };
 
   @override
   void initState() {
@@ -50,8 +51,13 @@ class _SettingsPageState extends State<SettingsPage> {
         .doc(user!.uid)
         .get()
         .then((value) {
+      print("this is value data ${value.data()}");
       loggedInUsers = UserModel.fromMap(value.data());
-      setState(() {});
+
+      settingsPageController.phoneNumberValue.value =
+          loggedInUsers.phoneNumber!;
+      phoneNumberController.text =
+          settingsPageController.phoneNumberValue.value;
     });
 
     print("settings");
@@ -61,33 +67,43 @@ class _SettingsPageState extends State<SettingsPage> {
     print(user!.uid);
     print(loggedInUsers);
     print(loggedInUsers.email);
+    print(loggedInUsers.phoneNumber);
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
+    settingsPageController.emailValue.value = Get.arguments['email'];
     return Material(
       child: SafeArea(
         child: Scaffold(
           appBar: AppBar(
-              title: Text(
-            "Settings",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
+            title: const Text(
+              "Settings",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
             ),
-          )),
+          ),
           body: Container(
             color: Colors.grey.shade200,
+            //
+            //main column
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                //
+                //first three details
+                //about the user
                 Container(
                   padding: const EdgeInsets.symmetric(
                     vertical: 4,
                   ),
                   child: Column(
                     children: [
+                      //
+                      //email container
                       Container(
                         color: Colors.white,
                         padding: const EdgeInsets.symmetric(
@@ -98,11 +114,14 @@ class _SettingsPageState extends State<SettingsPage> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text("E-mail address"),
-                            Text("${loggedInUsers.email}"),
+                            Obx(() => Text(
+                                "${settingsPageController.emailValue.value}")),
                           ],
                         ),
                       ),
-                      fucntionDivider(),
+                      functionDivider(),
+                      //
+                      //phone number container
                       Container(
                         color: Colors.white,
                         padding: EdgeInsets.symmetric(horizontal: 20),
@@ -117,57 +136,69 @@ class _SettingsPageState extends State<SettingsPage> {
                             ),
                             Row(
                               children: [
-                                addNumber
-                                    ? Container(
-                                        height: 47,
-                                        width: 100,
-                                        child: Flexible(
-                                          fit: FlexFit.loose,
-                                          child: TextFormField(
-                                            decoration: const InputDecoration(
-                                              contentPadding:
-                                                  EdgeInsets.symmetric(
-                                                      vertical: 0),
-                                              hintText: "Enter Number",
-                                              border: InputBorder.none,
-                                            ),
-                                            // validator: (){},
-                                            // onChanged: (value) {
-                                            //   setState(() {
-                                            //     phoneNum = int.parse(value);
-                                            //   });
-                                            // },
-                                          ),
+                                Container(
+                                  height: 47,
+                                  width: 100,
+                                  child: Flexible(
+                                    fit: FlexFit.loose,
+                                    child: TextFormField(
+                                      focusNode: phoneNumberNode,
+                                      controller: phoneNumberController,
+                                      inputFormatters: <TextInputFormatter>[
+                                        FilteringTextInputFormatter.allow(
+                                            RegExp('[0-9]'))
+                                      ],
+                                      keyboardType: const TextInputType
+                                          .numberWithOptions(),
+                                      decoration: const InputDecoration(
+                                        contentPadding: EdgeInsets.symmetric(
+                                          vertical: 0,
                                         ),
-                                      )
-                                    : Text(''),
-                                SizedBox(
-                                  height: 20,
+                                        hintText: "Enter Number",
+                                        border: InputBorder.none,
+                                      ),
+                                      // validator: (){},
+                                      // onChanged: (value) {
+                                      //   setState(() {
+                                      //     phoneNum = int.parse(value);
+                                      //   });
+                                      // },
+                                    ),
+                                  ),
                                 ),
-                                loggedInUsers.phoneNumber?.length == 0
-                                    ? InkWell(
-                                        onTap: () {
-                                          addNumber = !addNumber;
-                                          setState(() {});
-                                        },
-                                        child: Container(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 10, vertical: 6),
-                                          child: Text("ADD"),
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(5),
-                                            color: Colors.grey.shade200,
-                                          ),
-                                        ),
-                                      )
-                                    : Text(''),
+                                SizedBox(
+                                  width: 20,
+                                ),
+                                InkWell(
+                                  onTap: () {
+                                    settingsPageController.emailValue.isEmpty
+                                        ? phoneNumberNode.requestFocus()
+                                        : phoneNumberNode.requestFocus();
+                                    print('edit works');
+                                    // setState(() {});
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10, vertical: 6),
+                                    child: Text(
+                                      settingsPageController.emailValue.isEmpty
+                                          ? "ADD"
+                                          : "EDIT",
+                                    ),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5),
+                                      color: Colors.grey.shade200,
+                                    ),
+                                  ),
+                                )
                               ],
                             ),
                           ],
                         ),
                       ),
-                      fucntionDivider(),
+                      functionDivider(),
+                      //
+                      //password container
                       Container(
                         color: Colors.white,
                         padding: const EdgeInsets.symmetric(
@@ -184,28 +215,27 @@ class _SettingsPageState extends State<SettingsPage> {
                     ],
                   ),
                 ),
-
+                //
                 // LANGUAGE SETTINGS
                 Container(
                   color: Colors.white,
                   padding:
-                      const EdgeInsets.symmetric(vertical: 20, horizontal: 20)
-                          .copyWith(top: 4),
+                      const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
                         "Language settings",
                         style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold),
+                          color: Colors.grey,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       Container(
                         margin: const EdgeInsets.only(top: 8),
                         padding:
-                            EdgeInsets.symmetric(vertical: 3, horizontal: 3)
-                                ,
+                            EdgeInsets.symmetric(vertical: 3, horizontal: 3),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5),
                           color: Colors.grey.shade200,
@@ -221,17 +251,21 @@ class _SettingsPageState extends State<SettingsPage> {
                     ],
                   ),
                 ),
-
+                //
                 //UNIT SETTINGS
                 Container(
                   color: Colors.white,
+                  margin: const EdgeInsets.only(
+                    top: 4,
+                    bottom: 4,
+                  ),
                   padding:
                       const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                   child: Expanded(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
+                        const Text(
                           "Weigh your weight in",
                           style: TextStyle(
                             color: Colors.grey,
@@ -239,20 +273,32 @@ class _SettingsPageState extends State<SettingsPage> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        Container(
-                          child: InkWell(
+                        Obx(
+                          () => InkWell(
                             onTap: () {
                               showModalBottomSheet(
-                                      // isDismissible: false,
-                                      // enableDrag: false,
-                                      isScrollControlled: true,
-                                      backgroundColor: Colors.transparent,
-                                      context: context,
-                                      builder: (BuildContext context) =>
-                                          chooseWeightUnit(context),
-                                    );
+                                // isDismissible: false,
+                                // enableDrag: false,
+                                isScrollControlled: true,
+                                backgroundColor: Colors.transparent,
+                                context: context,
+                                builder: (BuildContext context) =>
+                                    chooseWeightUnit(context),
+                              );
                             },
-                            child: Text(MassList[settingsPageController.currentWeightValue.value][1]),
+                            child: Row(
+                              children: [
+                                Text(
+                                    '${settingsPageController.currentWeightSymbol.value}'),
+                                const Padding(
+                                  padding: EdgeInsets.only(top: 6),
+                                  child: Icon(
+                                    CupertinoIcons.arrow_down,
+                                    size: 12,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         )
                       ],
@@ -267,7 +313,7 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  Widget fucntionDivider() {
+  Widget functionDivider() {
     return Divider(
       color: Colors.grey.shade300, //color of divider
       height: 1, //height spacing of divider
@@ -300,21 +346,6 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  changeUnitMethod() {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return Material(
-          child: Container(
-            child: ListView.builder(itemBuilder: (BuildContext context, index) {
-              return Text('gy');
-            }),
-          ),
-        );
-      },
-    );
-  }
-
   homeButtonMethod(BuildContext context) {
     Navigator.pop(context);
     setState(() {});
@@ -331,14 +362,16 @@ class _SettingsPageState extends State<SettingsPage> {
       child: GestureDetector(
         onTap: () {},
         child: DraggableScrollableSheet(
-          initialChildSize: 0.55,
-          minChildSize: 0.55,
-          maxChildSize: 0.55,
+          initialChildSize: 0.5,
+          minChildSize: 0.5,
+          maxChildSize: 0.5,
           builder: (_, controller) => Container(
             decoration: BoxDecoration(
               color: _colorScheme.background,
               borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(20), topRight: Radius.circular(20),),
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20),
+              ),
             ),
             child: Column(
               children: [
@@ -374,9 +407,22 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                       shrinkWrap: true,
                       itemBuilder: (context, index) {
-                        return InkWell(onTap: (){
-                          settingsPageController.currentWeightValue.value = MassList[MassList.keys.toList()[index]][0];
-                        },child: Container(padding: const EdgeInsets.only(left: 30, top: 25, bottom: 25),child: Text(MassList[MassList.keys.toList()[index]][0]),),);
+                        return InkWell(
+                          onTap: () {
+                            settingsPageController.currentWeightValue.value =
+                                MassList[MassList.keys.toList()[index]][0];
+                            settingsPageController.currentWeightSymbol.value =
+                                MassList[MassList.keys.toList()[index]][1];
+                            settingsPageController.currentWeightMultiplier.value =
+                                MassList[MassList.keys.toList()[index]][2];
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.only(
+                                left: 30, top: 25, bottom: 25),
+                            child: Text(
+                                MassList[MassList.keys.toList()[index]][0]),
+                          ),
+                        );
                       },
                       itemCount: MassList.length,
                     ),
@@ -408,13 +454,12 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
     );
   }
-
-
-
 }
 
-
-class SettingsPageController extends GetxController{
+class SettingsPageController extends GetxController {
   RxString currentWeightValue = 'Kilogram'.obs;
-
+  RxString currentWeightSymbol = 'kg'.obs;
+  RxDouble currentWeightMultiplier = (1.0).obs;
+  RxString phoneNumberValue = ''.obs;
+  RxString emailValue = ''.obs;
 }

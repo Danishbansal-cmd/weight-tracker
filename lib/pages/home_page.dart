@@ -12,6 +12,7 @@ import 'package:try1_something/main.dart';
 import 'package:try1_something/models/user_model.dart';
 import 'package:try1_something/models/weight_model.dart';
 import 'package:try1_something/pages/login_page.dart';
+import 'package:try1_something/pages/settings.dart';
 import 'package:try1_something/utils/themes.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:intl/intl.dart';
@@ -27,7 +28,7 @@ class _HomePageState extends State<HomePage> {
   //
   User? user = FirebaseAuth.instance.currentUser;
   UserModel loggedInUser = UserModel();
-  String unit = 'KG';
+
   String weightValue = '';
   // double testing = 2334;
   final _formKey = GlobalKey<FormState>();
@@ -41,6 +42,10 @@ class _HomePageState extends State<HomePage> {
   //
   //initializing controller
   final homePageController = Get.put(HomePageController());
+  final SettingsPageController settingsPageController =
+      Get.put(SettingsPageController());
+
+  String? unit;
 
   @override
   void initState() {
@@ -117,9 +122,11 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    setState(() {});
     final _colorScheme = Theme.of(context).colorScheme;
     final _textScheme = Theme.of(context).textTheme;
     final homeThemeManager = Provider.of<ThemeManager>(context);
+    // unit = singletonWeightClass.getWeightUnitSymbol();
 
     String fullName = "${loggedInUser.firstName} ${loggedInUser.secondName}";
     return Material(
@@ -224,7 +231,9 @@ class _HomePageState extends State<HomePage> {
                           height: 220,
                           width: MediaQuery.of(context).size.width,
                           child: Center(
-                            child: CircularProgressIndicator(backgroundColor: Colors.red,),
+                            child: CircularProgressIndicator(
+                              backgroundColor: Colors.red,
+                            ),
                           ),
                         ),
                       ),
@@ -363,7 +372,7 @@ class _HomePageState extends State<HomePage> {
                                     .toString()
                                     .replaceAll(".0", "");
                               } else {
-                                removeZero = item['weight'];
+                                removeZero = item['weight'].toString();
                               }
                               return Dismissible(
                                 key: UniqueKey(),
@@ -406,18 +415,18 @@ class _HomePageState extends State<HomePage> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
                                           children: [
-                                            "${removeZero} ${unit}"
-                                                .text
-                                                .center
-                                                .textStyle(
-                                                  const TextStyle(
-                                                    fontSize: 18,
-                                                    color: Colors.white,
-                                                    letterSpacing: 1,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                )
-                                                .make(),
+                                            Obx(
+                                              () => Text(
+                                                "${(double.parse(removeZero) / settingsPageController.currentWeightMultiplier.value).toStringAsFixed(2)} ${settingsPageController.currentWeightSymbol.value}",
+                                                textAlign: TextAlign.center,
+                                                style: const TextStyle(
+                                                  fontSize: 18,
+                                                  color: Colors.white,
+                                                  letterSpacing: 1,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
                                           ],
                                         ),
                                       ),
@@ -897,27 +906,111 @@ class _HomePageState extends State<HomePage> {
 
   //return data of weights
   Widget returnLineChartOfWeights() {
-    return LineChart(
-      // LineChartData(
-      //   borderData: FlBorderData(show: false),
-      //   lineBarsData: [
-      //     LineChartBarData(
-      //       isCurved: true,
-      //       spots: [
-      //         const FlSpot(0, 1),
-      //         const FlSpot(1, 3),
-      //         const FlSpot(2, 10),
-      //         const FlSpot(3, 7),
-      //         const FlSpot(4, 12),
-      //         const FlSpot(5, 13),
-      //         const FlSpot(6, 17),
-      //         const FlSpot(7, 15),
-      //         const FlSpot(8, 20)
-      //       ],
-      //     ),
-      //   ],
-      // ),
-      mainData(),
+    //testing data for charts
+    List<Color> gradientColors = [
+      const Color(0xff23b6e6),
+      const Color(0xff02d39a),
+    ];
+    return Obx(
+      () => LineChart(
+        LineChartData(
+          gridData: FlGridData(
+            show: true,
+            drawVerticalLine: true,
+            horizontalInterval: 10 / settingsPageController.currentWeightMultiplier.value,
+            verticalInterval: 1,
+            getDrawingHorizontalLine: (value) {
+              return FlLine(
+                color: const Color(0xff37434d),
+                strokeWidth: 1,
+              );
+            },
+            getDrawingVerticalLine: (value) {
+              return FlLine(
+                color: const Color(0xff37434d),
+                strokeWidth: 1,
+              );
+            },
+          ),
+          titlesData: FlTitlesData(
+            show: true,
+            rightTitles: AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
+            topTitles: AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
+            bottomTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: true,
+                reservedSize: 20,
+                interval: 1,
+                getTitlesWidget: bottomTitleWidgets,
+              ),
+            ),
+            leftTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: true,
+                interval: 1,
+                getTitlesWidget: leftTitleWidgets,
+                reservedSize: 28,
+              ),
+            ),
+          ),
+          borderData: FlBorderData(
+            show: true,
+            border: Border.all(
+              color: const Color(0xff37434d),
+              width: 1,
+            ),
+          ),
+          minX: 0,
+          minY: 0,
+          maxX: 31,
+          maxY: 200 / settingsPageController.currentWeightMultiplier.value,
+          lineBarsData: [
+            LineChartBarData(
+              spots: List<FlSpot>.generate(
+                homePageController.dayAndWeightData.length,
+                (index) => FlSpot(
+                  double.parse(homePageController.dayAndWeightData[index].day!),
+                  homePageController.dayAndWeightData[index].weight!,
+                ),
+              ),
+              // const [
+              //   FlSpot(0, 3),
+              //   FlSpot(2.6, 2),
+              //   FlSpot(4.9, 5),
+              //   FlSpot(6.8, 3.1),
+              //   FlSpot(8, 4),
+              //   FlSpot(9.5, 3),
+              //   FlSpot(11, 4),
+              // ],
+              isCurved: true,
+              gradient: LinearGradient(
+                colors: gradientColors,
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+              ),
+              barWidth: 5,
+              isStrokeCapRound: true,
+              dotData: FlDotData(
+                show: false,
+              ),
+              belowBarData: BarAreaData(
+                show: true,
+                gradient: LinearGradient(
+                  colors: gradientColors
+                      .map((color) => color.withOpacity(0.3))
+                      .toList(),
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -974,7 +1067,6 @@ class _HomePageState extends State<HomePage> {
     const style = TextStyle(
       color: Color(0xff67727d),
       fontWeight: FontWeight.bold,
-
       fontSize: 11,
     );
     String text;
@@ -1010,111 +1102,10 @@ class _HomePageState extends State<HomePage> {
     return Text(text, style: style, textAlign: TextAlign.left);
   }
 
-  LineChartData mainData() {
-    //testing data for charts
-    List<Color> gradientColors = [
-      const Color(0xff23b6e6),
-      const Color(0xff02d39a),
-    ];
+  // LineChartData mainData() {
 
-    return LineChartData(
-      gridData: FlGridData(
-        show: true,
-        drawVerticalLine: true,
-        horizontalInterval: 10,
-        verticalInterval: 1,
-        getDrawingHorizontalLine: (value) {
-          return FlLine(
-            color: const Color(0xff37434d),
-            strokeWidth: 1,
-          );
-        },
-        getDrawingVerticalLine: (value) {
-          return FlLine(
-            color: const Color(0xff37434d),
-            strokeWidth: 1,
-          );
-        },
-      ),
-      titlesData: FlTitlesData(
-        show: true,
-        rightTitles: AxisTitles(
-          sideTitles: SideTitles(showTitles: false),
-        ),
-        topTitles: AxisTitles(
-          sideTitles: SideTitles(showTitles: false),
-        ),
-        bottomTitles: AxisTitles(
-          sideTitles: SideTitles(
-            showTitles: true,
-            reservedSize: 20,
-            interval: 1,
-            getTitlesWidget: bottomTitleWidgets,
-          ),
-        ),
-        leftTitles: AxisTitles(
-          sideTitles: SideTitles(
-            showTitles: true,
-            interval: 1,
-            getTitlesWidget: leftTitleWidgets,
-            reservedSize: 28,
-          ),
-        ),
-      ),
-      borderData: FlBorderData(
-        show: true,
-        border: Border.all(
-          color: const Color(0xff37434d),
-          width: 1,
-        ),
-      ),
-      minX: 0,
-      minY: 0,
-      maxX: 31,
-      maxY: 200,
-      lineBarsData: [
-        LineChartBarData(
-          spots: List<FlSpot>.generate(
-            homePageController.dayAndWeightData.length,
-            (index) => FlSpot(
-              double.parse(homePageController.dayAndWeightData[index].day!),
-              homePageController.dayAndWeightData[index].weight!,
-            ),
-          ),
-          // const [
-          //   FlSpot(0, 3),
-          //   FlSpot(2.6, 2),
-          //   FlSpot(4.9, 5),
-          //   FlSpot(6.8, 3.1),
-          //   FlSpot(8, 4),
-          //   FlSpot(9.5, 3),
-          //   FlSpot(11, 4),
-          // ],
-          isCurved: true,
-          gradient: LinearGradient(
-            colors: gradientColors,
-            begin: Alignment.centerLeft,
-            end: Alignment.centerRight,
-          ),
-          barWidth: 5,
-          isStrokeCapRound: true,
-          dotData: FlDotData(
-            show: false,
-          ),
-          belowBarData: BarAreaData(
-            show: true,
-            gradient: LinearGradient(
-              colors: gradientColors
-                  .map((color) => color.withOpacity(0.3))
-                  .toList(),
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
+  //   return
+  // }
 }
 
 class dayAndWeightDataModel {
