@@ -21,6 +21,7 @@ class _LoginPageState extends State<LoginPage> {
   String passwords = '';
   TextEditingController emailsController = TextEditingController();
   TextEditingController passwordsController = TextEditingController();
+  bool _passwordVisible = false;
 
   //creating controller
   final loginPageStateController = Get.put(LoginPageState());
@@ -144,8 +145,20 @@ class _LoginPageState extends State<LoginPage> {
                     TextFormField(
                       focusNode: node2,
                       controller: passwordsController,
-                      obscureText: true,
+                      obscureText: !_passwordVisible,
                       decoration: InputDecoration(
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              _passwordVisible = !_passwordVisible;
+                            });
+                          },
+                          icon: Icon(
+                            _passwordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                          ),
+                        ),
                         hintText: "Enter Password",
                         labelText: "PASSWORD",
                         labelStyle: TextStyle(
@@ -167,13 +180,17 @@ class _LoginPageState extends State<LoginPage> {
                         passwords = passwordsController.text;
                       },
                     ),
-                    SizedBox(height: 10,),
+                    SizedBox(
+                      height: 10,
+                    ),
                     Text(
                       "Forgot Password?",
                       style: _textTheme.headline6,
                       textAlign: TextAlign.right,
                     ).wThreeForth(context),
-                    SizedBox(height: 30,),
+                    SizedBox(
+                      height: 30,
+                    ),
                     Material(
                       color: Colors.deepPurple,
                       borderRadius: BorderRadius.circular(50),
@@ -197,7 +214,13 @@ class _LoginPageState extends State<LoginPage> {
                                   Icons.done,
                                   color: Colors.white,
                                 )
-                              : "LOGIN".text.color(Colors.white).bold.make(),
+                              : const Text(
+                                  "LOGIN",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                         ),
                       ),
                     ),
@@ -278,13 +301,15 @@ class _LoginPageState extends State<LoginPage> {
                 ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: "Signed in successfully".text.make())),
                 loginPageStateController.loginEmailValue.value = '',
-                    
                 Navigator.of(context).pushReplacement(
                     MaterialPageRoute(builder: (context) => HomePage())),
               })
           .catchError((Object error) {
         print("cath error works");
-        Fluttertoast.showToast(msg: "not getting anything");
+        Fluttertoast.showToast(msg: "Wrong username or password");
+        setState(() {
+          changeButton = false;
+        });
       });
     }
   }

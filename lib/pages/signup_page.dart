@@ -22,6 +22,10 @@ class _SignupPageState extends State<SignupPage> {
   String passwords = '';
   String confirmPasswords = '';
   bool signupCheckbox = false;
+  //
+  //bool for password visibility
+  bool _passwordVisible = false;
+  bool _passwordVisible2 = false;
 
   bool changeButton = false;
   final _formKey = GlobalKey<FormState>();
@@ -227,8 +231,20 @@ class _SignupPageState extends State<SignupPage> {
                         TextFormField(
                           focusNode: node4,
                           autovalidateMode: AutovalidateMode.onUserInteraction,
-                          obscureText: true,
+                          obscureText: !_passwordVisible,
                           decoration: InputDecoration(
+                            suffixIcon: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              _passwordVisible = !_passwordVisible;
+                            });
+                          },
+                          icon: Icon(
+                            _passwordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                          ),
+                        ),
                             hintText: "Enter Password",
                             labelText: "PASSWORD",
                             labelStyle: TextStyle(
@@ -254,8 +270,20 @@ class _SignupPageState extends State<SignupPage> {
                         10.heightBox,
                         TextFormField(
                           focusNode: node5,
-                          obscureText: true,
+                          obscureText: !_passwordVisible2,
                           decoration: InputDecoration(
+                            suffixIcon: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              _passwordVisible2 = !_passwordVisible2;
+                            });
+                          },
+                          icon: Icon(
+                            _passwordVisible2
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                          ),
+                        ),
                             hintText: "Enter Password",
                             labelText: "CONFIRM PASSWORD",
                             labelStyle: TextStyle(

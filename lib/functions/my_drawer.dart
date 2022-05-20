@@ -75,23 +75,23 @@ class MyDrawer extends StatelessWidget {
                 ),
               ),
             ),
-            InkWell(
-              onTap: () {
-                Get.back();
-                Get.toNamed('/bodyMassIndexPage');
-              },
-              child: const ListTile(
-                leading:
-                    Icon(CupertinoIcons.settings_solid, color: Colors.white),
-                title: Text(
-                  "Bosdfasdf as sad ",
-                  textScaleFactor: 1.2,
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
+            // InkWell(
+            //   onTap: () {
+            //     Get.back();
+            //     Get.toNamed('/bodyMassIndexPage');
+            //   },
+            //   child: const ListTile(
+            //     leading:
+            //         Icon(CupertinoIcons.settings_solid, color: Colors.white),
+            //     title: Text(
+            //       "Bosdfasdf as sad ",
+            //       textScaleFactor: 1.2,
+            //       style: TextStyle(
+            //         color: Colors.white,
+            //       ),
+            //     ),
+            //   ),
+            // ),
             Container(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,

@@ -37,32 +37,50 @@ class _OnboardingPagesState extends State<OnboardingPages> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Container(
-          // color: Colors.red,
-          child: Stack(
-            children: [
-              //upside down triagnle
-              CustomPaint(
-                size: Size(
-                    MediaQuery.of(context).size.width,
-                    MediaQuery.of(context).size.height -
-                        MediaQuery.of(context).viewPadding.top),
-                painter: drawUpsideDownTriangle(),
-              ),
+      body: Container(
+        // color: Colors.red,
+        child: Stack(
+          children: [
+            //upside down triagnle
+            // CustomPaint(
+            //   size: Size(
+            //       MediaQuery.of(context).size.width,
+            //       MediaQuery.of(context).size.height -
+            //           MediaQuery.of(context).viewPadding.top),
+            //   painter: drawUpsideDownTriangle(),
+            // ),
 
-              //background right angle triangle
-              CustomPaint(
-                // MediaQuery.of(context).size.width
-                size: Size(
-                    MediaQuery.of(context).size.width,
-                    MediaQuery.of(context).size.height -
-                        MediaQuery.of(context).viewPadding.top),
-                painter: drawRightAngleTriangleShape(),
-              ),
+            // //background right angle triangle
+            // CustomPaint(
+            //   // MediaQuery.of(context).size.width
+            //   size: Size(
+            //       MediaQuery.of(context).size.width,
+            //       MediaQuery.of(context).size.height -
+            //           MediaQuery.of(context).viewPadding.top),
+            //   painter: drawRightAngleTriangleShape(),
+            // ),
 
-              //main column that holds all the data
-              Column(
+            //
+            Opacity(
+              opacity: 0.2,
+              child: Container(
+                width: MediaQuery.of(context).size.width + 30,
+                height: MediaQuery.of(context).size.height,
+                child: FittedBox(
+                  fit: BoxFit.fill,
+                  child: Image.asset(
+                    'assets/background.jpg',
+                  ),
+                ),
+              ),
+            ),
+
+            //main column that holds all the data
+            Container(
+              margin: EdgeInsets.only(
+                top: MediaQuery.of(context).viewPadding.top,
+              ),
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   //
@@ -209,7 +227,7 @@ class _OnboardingPagesState extends State<OnboardingPages> {
                             splashColor: Color.fromARGB(73, 255, 255, 255),
                             onTap: () {
                               if (currentIndex == onboardingValues.length - 1) {
-                                Get.toNamed('/firstPage');
+                                Get.offNamed('/firstPage');
                               } else {
                                 setState(() {
                                   _controller!.nextPage(
@@ -240,8 +258,8 @@ class _OnboardingPagesState extends State<OnboardingPages> {
                   ),
                 ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

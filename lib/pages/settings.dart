@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -23,9 +25,8 @@ class _SettingsPageState extends State<SettingsPage> {
 
   //
   //initializing controller
-  final SettingsPageController settingsPageController = Get.put(SettingsPageController());
-  //textformfield variables
-  TextEditingController phoneNumberController = TextEditingController();
+  final SettingsPageController settingsPageController =
+      Get.put(SettingsPageController());
   FocusNode phoneNumberNode = FocusNode();
 
   //BASIC UNIT IS KG
@@ -56,8 +57,8 @@ class _SettingsPageState extends State<SettingsPage> {
 
       settingsPageController.phoneNumberValue.value =
           loggedInUsers.phoneNumber!;
-      phoneNumberController.text =
-          settingsPageController.phoneNumberValue.value;
+      settingsPageController.firstNameValue.value = loggedInUsers.firstName!;
+      settingsPageController.secondNameValue.value = loggedInUsers.secondName!;
     });
 
     print("settings");
@@ -129,76 +130,24 @@ class _SettingsPageState extends State<SettingsPage> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                              padding: EdgeInsets.symmetric(
-                                vertical: addNumber ? 0 : 15,
-                              ),
-                              child: Text("Phone number"),
+                              child: Center(child: Text("Phone number")),
                             ),
-                            Row(
-                              children: [
-                                Container(
-                                  height: 47,
-                                  width: 100,
-                                  child: Flexible(
-                                    fit: FlexFit.loose,
-                                    child: TextFormField(
-                                      focusNode: phoneNumberNode,
-                                      controller: phoneNumberController,
-                                      inputFormatters: <TextInputFormatter>[
-                                        FilteringTextInputFormatter.allow(
-                                            RegExp('[0-9]'))
-                                      ],
-                                      keyboardType: const TextInputType
-                                          .numberWithOptions(),
-                                      decoration: const InputDecoration(
-                                        contentPadding: EdgeInsets.symmetric(
-                                          vertical: 0,
-                                        ),
-                                        hintText: "Enter Number",
-                                        border: InputBorder.none,
-                                      ),
-                                      // validator: (){},
-                                      // onChanged: (value) {
-                                      //   setState(() {
-                                      //     phoneNum = int.parse(value);
-                                      //   });
-                                      // },
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 20,
-                                ),
-                                InkWell(
-                                  onTap: () {
-                                    settingsPageController.emailValue.isEmpty
-                                        ? phoneNumberNode.requestFocus()
-                                        : phoneNumberNode.requestFocus();
-                                    print('edit works');
-                                    // setState(() {});
-                                  },
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 10, vertical: 6),
+                            Obx(
+                              () => Container(
+                                height: 47,
+                                // width: 100,
+                                child: Center(
                                     child: Text(
-                                      settingsPageController.emailValue.isEmpty
-                                          ? "ADD"
-                                          : "EDIT",
-                                    ),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5),
-                                      color: Colors.grey.shade200,
-                                    ),
-                                  ),
-                                )
-                              ],
+                                  settingsPageController.phoneNumberValue.value,
+                                )),
+                              ),
                             ),
                           ],
                         ),
                       ),
                       functionDivider(),
                       //
-                      //password container
+                      //Full Name container
                       Container(
                         color: Colors.white,
                         padding: const EdgeInsets.symmetric(
@@ -208,7 +157,9 @@ class _SettingsPageState extends State<SettingsPage> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text("Password"),
+                            Text("Full Name"),
+                            Obx(() => Text(
+                                "${settingsPageController.firstNameValue.value} ${settingsPageController.secondNameValue.value}")),
                           ],
                         ),
                       ),
@@ -261,50 +212,52 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                   padding:
                       const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                  child: Expanded(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          "Weigh your weight in",
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        "Weigh your weight in",
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Obx(
+                        () => InkWell(
+                          onTap: () {
+                            showModalBottomSheet(
+                              // isDismissible: false,
+                              // enableDrag: false,
+                              isScrollControlled: true,
+                              backgroundColor: Colors.transparent,
+                              context: context,
+                              builder: (BuildContext context) =>
+                                  chooseWeightUnit(context),
+                            );
+                          },
+                          child: Row(
+                            children: [
+                              Text(
+                                  '${settingsPageController.currentWeightSymbol.value}'),
+                              const Padding(
+                                padding: EdgeInsets.only(top: 6),
+                                child: Icon(
+                                  CupertinoIcons.arrow_down,
+                                  size: 12,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        Obx(
-                          () => InkWell(
-                            onTap: () {
-                              showModalBottomSheet(
-                                // isDismissible: false,
-                                // enableDrag: false,
-                                isScrollControlled: true,
-                                backgroundColor: Colors.transparent,
-                                context: context,
-                                builder: (BuildContext context) =>
-                                    chooseWeightUnit(context),
-                              );
-                            },
-                            child: Row(
-                              children: [
-                                Text(
-                                    '${settingsPageController.currentWeightSymbol.value}'),
-                                const Padding(
-                                  padding: EdgeInsets.only(top: 6),
-                                  child: Icon(
-                                    CupertinoIcons.arrow_down,
-                                    size: 12,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
+                      )
+                    ],
                   ),
                 ),
+              
+                //
+                //SECURITY SETTINGS
+                // Container(child: ,),
               ],
             ),
           ),
@@ -413,7 +366,8 @@ class _SettingsPageState extends State<SettingsPage> {
                                 MassList[MassList.keys.toList()[index]][0];
                             settingsPageController.currentWeightSymbol.value =
                                 MassList[MassList.keys.toList()[index]][1];
-                            settingsPageController.currentWeightMultiplier.value =
+                            settingsPageController
+                                    .currentWeightMultiplier.value =
                                 MassList[MassList.keys.toList()[index]][2];
                           },
                           child: Container(
@@ -430,22 +384,36 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 //
                 // // CANCEL MODAL BUTTON
-                InkWell(
+                GestureDetector(
                   onTap: () {
                     Navigator.pop(context);
                   },
                   child: Container(
+                    height: 55,
+                    margin: const EdgeInsets.symmetric(
+                      vertical: 20,
+                      horizontal: 30,
+                    ),
                     width: MediaQuery.of(context).size.width,
-                    child: "Cancel".text.center.bold.make().py(13),
+                    child: const Center(
+                      child: Text(
+                        "Cancel",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.deepPurple,
                       border: Border.all(
                         width: 1,
                         color: Colors.deepPurple,
                       ),
-                      borderRadius: BorderRadius.circular(60),
+                      borderRadius: BorderRadius.circular(13),
                     ),
-                  ).pSymmetric(v: 20, h: 50),
+                  ),
                 ),
               ],
             ),
@@ -462,4 +430,6 @@ class SettingsPageController extends GetxController {
   RxDouble currentWeightMultiplier = (1.0).obs;
   RxString phoneNumberValue = ''.obs;
   RxString emailValue = ''.obs;
+  RxString firstNameValue = ''.obs;
+  RxString secondNameValue = ''.obs;
 }

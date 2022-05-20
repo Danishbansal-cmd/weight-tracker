@@ -917,7 +917,7 @@ class _HomePageState extends State<HomePage> {
           gridData: FlGridData(
             show: true,
             drawVerticalLine: true,
-            horizontalInterval: 10 / settingsPageController.currentWeightMultiplier.value,
+            horizontalInterval: 10,
             verticalInterval: 1,
             getDrawingHorizontalLine: (value) {
               return FlLine(
@@ -967,7 +967,7 @@ class _HomePageState extends State<HomePage> {
           minX: 0,
           minY: 0,
           maxX: 31,
-          maxY: 200 / settingsPageController.currentWeightMultiplier.value,
+          maxY: 200 ,
           lineBarsData: [
             LineChartBarData(
               spots: List<FlSpot>.generate(

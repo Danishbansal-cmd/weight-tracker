@@ -40,64 +40,85 @@ class FirstPage extends StatelessWidget {
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                InkWell(
-                  borderRadius: BorderRadius.circular(50),
-                  onTap: () {
-                    Navigator.pushNamed(context, MyRoutes.signupPage);
-                  },
-                  child: Container(
-                    child: "SIGN UP"
-                        .text
-                        .center
-                        .bold
-                        .color(Colors.white)
-                        .make()
-                        .py(13),
-                    // padding: EdgeInsets.symmetric(horizontal: 80,vertical: 15),
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        width: 1,
-                        color: Colors.white,
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 30,),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      splashColor: Colors.white,
+                      borderRadius: BorderRadius.circular(13),
+                      onTap: () {
+                        Navigator.pushNamed(context, MyRoutes.signupPage);
+                      },
+                      child: Container(
+                        height: 55,
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(vertical:13.0),
+                        child: const Center(
+                          child: Text(
+                              "SIGN UP",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                  
+                              textAlign: TextAlign.center,
+                            ),
+                        ),
+                        // padding: EdgeInsets.symmetric(horizontal: 80,vertical: 15),
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            width: 1,
+                            color: Colors.white,
+                          ),
+                          borderRadius: BorderRadius.circular(13),
+                        ),
                       ),
-                      borderRadius: BorderRadius.circular(50),
                     ),
-                  ).wThreeForth(context),
+                  ),
                 ),
                 const SizedBox(
-                  height: 20,
+                  height: 12,
                 ),
-                Material(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(50),
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(50),
-                    onTap: () {
-                      Navigator.pushNamed(context, MyRoutes.loginPage);
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) => LoginPage(),
-                      //   ),
-                      // );
-                    },
-                    child: Container(
-                      child: "LOGIN"
-                          .text
-                          .center
-                          .bold
-                          .color(_colorScheme.primary)
-                          .make()
-                          .py(13),
-                      // padding: EdgeInsets.symmetric(horizontal: 80,vertical: 15),
-                      decoration: BoxDecoration(
-                        // color: Colors.white,
-                        border: Border.all(
-                          width: 1,
-                          color: Colors.white,
+                Container(
+                  padding: EdgeInsets.zero,
+                  margin:const EdgeInsets.symmetric(horizontal: 30,),
+                  child: Material(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(13),
+                    child: InkWell(
+                      splashColor: Colors.deepPurple,
+                      borderRadius: BorderRadius.circular(13),
+                      onTap: () {
+                        Navigator.pushNamed(context, MyRoutes.loginPage);
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (context) => LoginPage(),
+                        //   ),
+                        // );
+                      },
+                      child: Container(
+                        width: double.infinity,
+                        height: 55,
+                        padding: const EdgeInsets.symmetric(vertical:13.0),
+                        child: Center(
+                          child: Text(
+                            "LOGIN",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: _colorScheme.primary,
+                            ),
+
+                            textAlign: TextAlign.center,
+                          ),
                         ),
-                        borderRadius: BorderRadius.circular(50),
+                        decoration: BoxDecoration(
+                          // color: Colors.white,
+                          borderRadius: BorderRadius.circular(13),
+                        ),
                       ),
-                    ).wThreeForth(context),
+                    ),
                   ),
                 ),
               ],

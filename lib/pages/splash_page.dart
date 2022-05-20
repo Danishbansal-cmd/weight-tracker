@@ -31,11 +31,11 @@ class _SplashPageState extends State<SplashPage> {
     Future.delayed(
       const Duration(milliseconds: 1800),
       () => data == 0 ||
-              data == null
-          ? Get.toNamed('/onboardingPages')
+              data == null || data == 1
+          ? Get.offNamed('/onboardingPages')
           : user == null
-              ? Get.toNamed('/firstPage')
-              : Get.toNamed('/homePage'),
+              ? Get.offNamed('/firstPage')
+              : Get.offNamed('/homePage'),
     );
   }
 
