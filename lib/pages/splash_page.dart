@@ -26,12 +26,12 @@ class _SplashPageState extends State<SplashPage> {
   void getNextScreen() async {
     await onRefresh(FirebaseAuth.instance.currentUser);
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    var data = await preferences.getInt('initScreen');
+    var data = await preferences.getInt('initOnboardScreen');
     print('this is the sharedprefrences data $data');
     Future.delayed(
       const Duration(milliseconds: 1800),
       () => data == 0 ||
-              data == null || data == 1
+              data == null
           ? Get.offNamed('/onboardingPages')
           : user == null
               ? Get.offNamed('/firstPage')

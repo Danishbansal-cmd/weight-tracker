@@ -22,20 +22,22 @@ class MyThemes {
           color: Colors.deepPurple,
         ),
         canvasColor: Colors.white,
-        colorScheme: const ColorScheme.light(
+        colorScheme: ColorScheme.light(
           primary: Colors.deepPurple,
           background: Vx.gray200,
-          primaryVariant: Vx.gray200,
+          primaryVariant: Colors.grey.shade300,
           secondary: Colors.black,
         ),
         textTheme: const TextTheme(
           headline1: const TextStyle(
             color: Colors.white,
-          ),
-          headline2:const TextStyle(
-            fontSize: 20,
+            fontSize: 34,
             fontWeight: FontWeight.bold,
-            color: Colors.orange,
+          ),
+          headline2: const TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            fontSize: 14,
           ),
           headline6: const TextStyle(
             color: Colors.black,
@@ -43,25 +45,29 @@ class MyThemes {
             fontSize: 15,
           ),
           headline3: const TextStyle(
-            color: Color(0xffA59E9E),
-            fontSize: 33,
-            fontFamily: 'Alatsi-Regular'
-          ),
+              color: Color(0xffA59E9E),
+              fontSize: 33,
+              fontFamily: 'Alatsi-Regular'),
           headline4: const TextStyle(
-            color: Color(0xff676363),
-            fontSize: 24,
-            fontFamily: 'Alatsi-Regular'
-          ),
+              color: Color(0xff676363),
+              fontSize: 24,
+              fontFamily: 'Alatsi-Regular'),
           headline5: const TextStyle(
-            color: Colors.deepPurple,
-            fontSize: 20,
-            fontFamily: 'Alegreya_Sans_SC'
-          ),
+              color: Colors.deepPurple,
+              fontSize: 20,
+              fontFamily: 'Alegreya_Sans_SC'),
           button: TextStyle(
             fontFamily: 'Jua',
             fontSize: 22,
             color: Colors.white,
             letterSpacing: 1.1,
+          ),
+          
+          subtitle2: TextStyle(
+            fontFamily: 'Alatsi-Regular',
+            fontSize: 15,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF673AB7),
           ),
         ),
         fontFamily: GoogleFonts.lato().fontFamily,
@@ -107,4 +113,6 @@ class MyThemes {
           ),
         ),
       );
+
+  static const splashColor1 = Colors.white54;
 }

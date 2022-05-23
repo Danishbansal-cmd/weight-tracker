@@ -6,7 +6,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:try1_something/pages/home_page.dart';
 import 'package:try1_something/pages/login_page.dart';
 import 'package:try1_something/models/user_model.dart';
-import 'package:velocity_x/velocity_x.dart';
+import 'package:try1_something/utils/themes.dart';
+// import 'package:velocity_x/velocity_x.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({Key? key}) : super(key: key);
@@ -69,24 +70,27 @@ class _SignupPageState extends State<SignupPage> {
           toolbarHeight: 150,
           backgroundColor: _colorScheme.background,
           automaticallyImplyLeading: false,
-          title: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              "WeightTracker"
-                  .text
-                  .xl4
-                  .bold
-                  .color(Colors.deepPurple)
-                  .center
-                  .makeCentered(),
-              Text(
-                "weigh every moment",
-                style: _textTheme.headline6?.copyWith(
-                    wordSpacing: 12,
-                    letterSpacing: 2,
-                    fontWeight: FontWeight.bold),
-              ),
-            ],
+          title: SizedBox(
+            width: MediaQuery.of(context).size.width,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "WeightTracker",
+                  style: Theme.of(context).textTheme.headline1!.copyWith(
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                ),
+                Text(
+                  "weigh every moment",
+                  style: Theme.of(context).textTheme.headline6?.copyWith(
+                        wordSpacing: 12,
+                        letterSpacing: 2,
+                        fontSize: 16,
+                      ),
+                ),
+              ],
+            ),
           ),
           elevation: 0,
         ),
@@ -132,6 +136,7 @@ class _SignupPageState extends State<SignupPage> {
                   // Text("wrsfs"),
                   Container(
                     // color: Colors.red,
+                    width: (MediaQuery.of(context).size.width / 4) * 3,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -174,7 +179,9 @@ class _SignupPageState extends State<SignupPage> {
                             setState(() {});
                           },
                         ),
-                        10.heightBox,
+                        const SizedBox(
+                          height: 10,
+                        ),
                         TextFormField(
                           focusNode: node2,
                           autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -198,7 +205,9 @@ class _SignupPageState extends State<SignupPage> {
                             setState(() {});
                           },
                         ),
-                        10.heightBox,
+                        const SizedBox(
+                          height: 10,
+                        ),
                         TextFormField(
                           focusNode: node3,
                           autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -227,24 +236,26 @@ class _SignupPageState extends State<SignupPage> {
                             setState(() {});
                           },
                         ),
-                        10.heightBox,
+                        const SizedBox(
+                          height: 10,
+                        ),
                         TextFormField(
                           focusNode: node4,
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                           obscureText: !_passwordVisible,
                           decoration: InputDecoration(
                             suffixIcon: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              _passwordVisible = !_passwordVisible;
-                            });
-                          },
-                          icon: Icon(
-                            _passwordVisible
-                                ? Icons.visibility
-                                : Icons.visibility_off,
-                          ),
-                        ),
+                              onPressed: () {
+                                setState(() {
+                                  _passwordVisible = !_passwordVisible;
+                                });
+                              },
+                              icon: Icon(
+                                _passwordVisible
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                              ),
+                            ),
                             hintText: "Enter Password",
                             labelText: "PASSWORD",
                             labelStyle: TextStyle(
@@ -267,23 +278,25 @@ class _SignupPageState extends State<SignupPage> {
                             setState(() {});
                           },
                         ),
-                        10.heightBox,
+                        const SizedBox(
+                          height: 10,
+                        ),
                         TextFormField(
                           focusNode: node5,
                           obscureText: !_passwordVisible2,
                           decoration: InputDecoration(
                             suffixIcon: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              _passwordVisible2 = !_passwordVisible2;
-                            });
-                          },
-                          icon: Icon(
-                            _passwordVisible2
-                                ? Icons.visibility
-                                : Icons.visibility_off,
-                          ),
-                        ),
+                              onPressed: () {
+                                setState(() {
+                                  _passwordVisible2 = !_passwordVisible2;
+                                });
+                              },
+                              icon: Icon(
+                                _passwordVisible2
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                              ),
+                            ),
                             hintText: "Enter Password",
                             labelText: "CONFIRM PASSWORD",
                             labelStyle: TextStyle(
@@ -329,69 +342,80 @@ class _SignupPageState extends State<SignupPage> {
                                 print(signupCheckbox);
                               },
                             ),
-                            RichText(
-                              text: TextSpan(
-                                text: "By signing up you accept the ",
-                                style: _textTheme.headline6,
-                                children: [
-                                  TextSpan(
-                                    text: "Term of service",
-                                    style: TextStyle(color: Colors.deepPurple),
-                                    recognizer: TapGestureRecognizer()
-                                      ..onTap = () {
-                                        print("Term of sertvive");
-                                      },
-                                  ),
-                                  TextSpan(
-                                    text: " and ",
-                                    style: _textTheme.headline6,
-                                  ),
-                                  TextSpan(
-                                    text: "Privacy Policy",
-                                    style: TextStyle(color: Colors.deepPurple),
-                                    recognizer: new TapGestureRecognizer()
-                                      ..onTap = () {
-                                        print("Privacy policy.");
-                                      },
-                                  )
-                                ],
+                            SizedBox(
+                              width:
+                                  (MediaQuery.of(context).size.width / 10) * 6,
+                              child: RichText(
+                                text: TextSpan(
+                                  text: "By signing up you accept the ",
+                                  style: _textTheme.headline6,
+                                  children: [
+                                    TextSpan(
+                                      text: "Term of service",
+                                      style:
+                                          TextStyle(color: Colors.deepPurple),
+                                      recognizer: TapGestureRecognizer()
+                                        ..onTap = () {
+                                          print("Term of sertvive");
+                                        },
+                                    ),
+                                    TextSpan(
+                                      text: " and ",
+                                      style: _textTheme.headline6,
+                                    ),
+                                    TextSpan(
+                                      text: "Privacy Policy",
+                                      style:
+                                          TextStyle(color: Colors.deepPurple),
+                                      recognizer: new TapGestureRecognizer()
+                                        ..onTap = () {
+                                          print("Privacy policy.");
+                                        },
+                                    )
+                                  ],
+                                ),
                               ),
-                            ).w60(context),
+                            ),
                           ],
                         ),
-                        30.heightBox,
+                        const SizedBox(
+                          height: 30,
+                        ),
                         Material(
                           color: Colors.deepPurple,
-                          borderRadius: BorderRadius.circular(50),
+                          borderRadius: BorderRadius.circular(13),
                           child: InkWell(
-                            borderRadius: BorderRadius.circular(50),
+                            borderRadius: BorderRadius.circular(13),
+                            splashColor: MyThemes.splashColor1,
                             onTap: () {
                               Signup(emails, passwords);
                             },
                             child: AnimatedContainer(
-                              height: 50,
+                              height: 55,
                               alignment: Alignment.center,
-                              duration: Duration(seconds: 1),
+                              duration: const Duration(seconds: 1),
                               width: changeButton
-                                  ? 50
+                                  ? 55
                                   : MediaQuery.of(context).size.width,
                               child: changeButton
-                                  ? Icon(Icons.done)
-                                  : "SIGN UP"
-                                      .text
-                                      .bold
-                                      .color(Colors.white)
-                                      .make(),
+                                  ? const Icon(Icons.done)
+                                  : Text(
+                                      "SIGN UP",
+                                      style:
+                                          Theme.of(context).textTheme.headline2,
+                                    ),
                             ),
                           ),
                         ),
-                        10.heightBox,
+                        const SizedBox(
+                          height: 10,
+                        ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
                               "Already have an account.",
-                              style: _textTheme.headline6,
+                              style: Theme.of(context).textTheme.headline6,
                             ),
                             GestureDetector(
                               onTap: () {
@@ -400,19 +424,15 @@ class _SignupPageState extends State<SignupPage> {
                                   _createRoute(),
                                 );
                               },
-                              child: "Sign In"
-                                  .text
-                                  .bold
-                                  .color(Colors.deepPurple)
-                                  .textStyle(const TextStyle(
-                                    fontSize: 15,
-                                  ))
-                                  .make(),
+                              child: Text(
+                                "Sign in",
+                                style: Theme.of(context).textTheme.subtitle2,
+                              ),
                             ),
                           ],
                         ),
                       ],
-                    ).wThreeForth(context),
+                    ),
                   ),
                 ],
               ),
@@ -433,23 +453,32 @@ class _SignupPageState extends State<SignupPage> {
     //   ),
     // );
     if (_formKey.currentState!.validate()) {
+      setState(() {
+        changeButton = true;
+      });
       if (signupCheckbox == true) {
         print("can i wrofs");
         await _auth
             .createUserWithEmailAndPassword(email: email, password: password)
             .then((value) => {
+                  changeButton = true,
                   postDetailsToFirestore(),
                 })
             .catchError(
           (e) {
             Fluttertoast.showToast(msg: e!.message);
+            setState(() {
+              changeButton = false;
+            });
           },
         );
       } else {
         print("does i work");
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: "String is not allowed".text.make(),
+          const SnackBar(
+            content: Text(
+              "String is not allowed",
+            ),
             // onVisible: () {
             //   print("it si visiboe");
             // },
@@ -460,7 +489,9 @@ class _SignupPageState extends State<SignupPage> {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: "Please fill the fields.".text.make(),
+          content: const Text(
+            "Please fill the fields.",
+          ),
           onVisible: () {
             print("it si visiboe");
           },

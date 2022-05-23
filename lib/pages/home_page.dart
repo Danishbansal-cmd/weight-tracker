@@ -430,7 +430,7 @@ class _HomePageState extends State<HomePage> {
                                           ],
                                         ),
                                       ),
-
+                                      //
                                       //DETAILS
                                       Container(
                                         decoration: BoxDecoration(
@@ -530,7 +530,7 @@ class _HomePageState extends State<HomePage> {
                                           ],
                                         ),
                                       ).expand(),
-
+                                      //
                                       //DAY
                                       Container(
                                         height: 100,
@@ -590,151 +590,165 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Column(
-                    children: [
-                      Form(
-                        key: _formKey,
-                        child: Theme(
-                          data: Theme.of(context)
-                              .copyWith(primaryColor: Colors.yellow),
-                          child: TextFormField(
-                            focusNode: mynode,
-                            cursorColor: Colors.deepPurple,
-                            // style: const TextStyle(
-                            //   color: Colors.deepPurple,
-                            // ),
-                            // autofocus: true,
-                            controller: weightController,
-                            onChanged: (value) {
-                              // if (value.runtimeType == "String") {
-                              //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              //       content: "String is not allowed".text.make()));
-                              //   weightValue = '';
-                              // }
-                              weightValue = weightController.text;
-                            },
-                            keyboardType: const TextInputType.numberWithOptions(
-                              decimal: true,
-                            ),
-                            inputFormatters: <TextInputFormatter>[
-                              FilteringTextInputFormatter.allow(
-                                  RegExp('[0-9.]'))
-                            ],
-                            decoration: InputDecoration(
-                              hintText: "Enter Weight",
-                              labelText: "WEIGHT",
-                              labelStyle: TextStyle(
-                                color: mynode.hasFocus
-                                    ? Colors.deepPurple
-                                    : const Color(0xFF909090),
+                  SizedBox(
+                    width: (MediaQuery.of(context).size.width / 100 ) * 64,
+                    child: Column(
+                      children: [
+                        //
+                        //add weight row or form field
+                        Form(
+                          key: _formKey,
+                          child: Theme(
+                            data: Theme.of(context)
+                                .copyWith(primaryColor: Colors.yellow),
+                            child: TextFormField(
+                              focusNode: mynode,
+                              cursorColor: Colors.deepPurple,
+                              // style: const TextStyle(
+                              //   color: Colors.deepPurple,
+                              // ),
+                              // autofocus: true,
+                              controller: weightController,
+                              onChanged: (value) {
+                                // if (value.runtimeType == "String") {
+                                //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                //       content: "String is not allowed".text.make()));
+                                //   weightValue = '';
+                                // }
+                                weightValue = weightController.text;
+                              },
+                              keyboardType: const TextInputType.numberWithOptions(
+                                decimal: true,
                               ),
-                              // enabledBorder: UnderlineInputBorder(
-                              //     borderSide:
-                              //         BorderSide(color: Colors.deepPurple)),
-                              focusedBorder: const UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.deepPurple,
-                                  width: 2,
+                              inputFormatters: <TextInputFormatter>[
+                                FilteringTextInputFormatter.allow(
+                                    RegExp('[0-9.]'))
+                              ],
+                              decoration: InputDecoration(
+                                hintText: "Enter Weight",
+                                labelText: "WEIGHT",
+                                labelStyle: TextStyle(
+                                  color: mynode.hasFocus
+                                      ? Colors.deepPurple
+                                      : const Color(0xFF909090),
                                 ),
+                                // enabledBorder: UnderlineInputBorder(
+                                //     borderSide:
+                                //         BorderSide(color: Colors.deepPurple)),
+                                focusedBorder: const UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Colors.deepPurple,
+                                    width: 2,
+                                  ),
+                                ),
+                                // focusColor: Colors.red,
                               ),
-                              // focusColor: Colors.red,
                             ),
                           ),
                         ),
-                      ),
-                      20.heightBox,
-                      //ADD WEIGHT BUTTON
-                      InkWell(
-                        borderRadius: BorderRadius.circular(50),
-                        onTap: () {
-                          if (_formKey.currentState!.validate()) {
-                            if (weightController.text.indexOf('.') !=
-                                weightController.text.lastIndexOf('.')) {
-                              Navigator.pop(context);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: "String is not allowed".text.make(),
-                                ),
-                              );
-                              Fluttertoast.showToast(
-                                  msg: "String is not allowed",
-                                  toastLength: Toast.LENGTH_LONG,
-                                  backgroundColor: Colors.red);
-                              weightController.clear();
-                              weightValue = weightController.text;
-                            } else if (weightController.text.indexOf('.') ==
-                                weightController.text.lastIndexOf('.')) {
-                              addWeight(double.parse(double.parse(weightValue)
-                                  .toStringAsFixed(3)));
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: "Your weight is added.".text.make(),
-                                ),
-                              );
-
-                              setState(() {
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        //ADD WEIGHT BUTTON
+                        InkWell(
+                          borderRadius: BorderRadius.circular(50),
+                          onTap: () {
+                            if (_formKey.currentState!.validate()) {
+                              if (weightController.text.indexOf('.') !=
+                                  weightController.text.lastIndexOf('.')) {
+                                Navigator.pop(context);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: "String is not allowed".text.make(),
+                                  ),
+                                );
+                                Fluttertoast.showToast(
+                                    msg: "String is not allowed",
+                                    toastLength: Toast.LENGTH_LONG,
+                                    backgroundColor: Colors.red);
                                 weightController.clear();
-                              });
-                              Navigator.pop(context);
-                            }
-                            // try {
-                            //   double.parse(weightController.text);
-                            // } catch (e) {
-                            //   print("iweorkfasdfasdf");
-                            //   Navigator.pop(context);
-                            //   ScaffoldMessenger.of(context).showSnackBar(
-                            //       SnackBar(
-                            //           content:
-                            //               "String is not allowed".text.make()));
-                            //   Fluttertoast.showToast(
-                            //       msg: "String is not allowed",
-                            //       toastLength: Toast.LENGTH_LONG,
-                            //       backgroundColor: Colors.red);
-                            //   weightController.clear();
-                            //   weightValue = weightController.text;
-                            // }
+                                weightValue = weightController.text;
+                              } else if (weightController.text.indexOf('.') ==
+                                  weightController.text.lastIndexOf('.')) {
+                                addWeight(double.parse(double.parse(weightValue)
+                                    .toStringAsFixed(3)));
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: "Your weight is added.".text.make(),
+                                  ),
+                                );
 
-                          }
-                        },
-                        child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          child: "Add Weight"
-                              .text
-                              .center
-                              .bold
-                              .color(Colors.white)
-                              .make()
-                              .py(13),
-                          decoration: BoxDecoration(
-                            color: Colors.deepPurple,
-                            border: Border.all(
-                              width: 1,
-                              color: Colors.deepPurple,
+                                setState(() {
+                                  weightController.clear();
+                                });
+                                Navigator.pop(context);
+                              }
+                              // try {
+                              //   double.parse(weightController.text);
+                              // } catch (e) {
+                              //   print("iweorkfasdfasdf");
+                              //   Navigator.pop(context);
+                              //   ScaffoldMessenger.of(context).showSnackBar(
+                              //       SnackBar(
+                              //           content:
+                              //               "String is not allowed".text.make()));
+                              //   Fluttertoast.showToast(
+                              //       msg: "String is not allowed",
+                              //       toastLength: Toast.LENGTH_LONG,
+                              //       backgroundColor: Colors.red);
+                              //   weightController.clear();
+                              //   weightValue = weightController.text;
+                              // }
+
+                            }
+                          },
+                          child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: 55,
+                            child: Center(
+                              child: Text(
+                                "Add Weight",
+                                style: Theme.of(context).textTheme.headline2,
+                              ),
                             ),
-                            borderRadius: BorderRadius.circular(50),
+                            decoration: BoxDecoration(
+                              color: Colors.deepPurple,
+                              border: Border.all(
+                                width: 1,
+                                color: Colors.deepPurple,
+                              ),
+                              borderRadius: BorderRadius.circular(13),
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  ).w64(context),
+                      ],
+                    ),
+                  ),
 
                   // CANCEL BUTTON MODAL
-                  InkWell(
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                    child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      child: "Cancel".text.center.bold.make().py(13),
-                      decoration: BoxDecoration(
-                        color: _colorScheme2.primaryVariant,
-                        border: Border.all(
-                          width: 1,
-                          color: _colorScheme2.primaryVariant,
+                  Material(
+                    color: _colorScheme2.primaryVariant,
+                    borderRadius: BorderRadius.circular(13),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(13),
+                      splashColor: Theme.of(context).colorScheme.primary,
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: Container(
+                        height: 55,
+                        width: (MediaQuery.of(context).size.width / 100 ) * 64,
+                        child: Center(
+                          child: Text(
+                            "Cancel",
+                            style: Theme.of(context).textTheme.headline2,
+                          ),
                         ),
-                        borderRadius: BorderRadius.circular(50),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(13),
+                        ),
                       ),
-                    ).w64(context),
+                    ),
                   ),
                 ],
               ),
@@ -967,7 +981,7 @@ class _HomePageState extends State<HomePage> {
           minX: 0,
           minY: 0,
           maxX: 31,
-          maxY: 200 ,
+          maxY: 200,
           lineBarsData: [
             LineChartBarData(
               spots: List<FlSpot>.generate(

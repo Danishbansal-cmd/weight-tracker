@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:try1_something/pages/home_page.dart';
 import 'package:try1_something/pages/signup_page.dart';
 import 'package:try1_something/utils/themes.dart';
-import 'package:velocity_x/velocity_x.dart';
+// import 'package:velocity_x/velocity_x.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
@@ -60,13 +60,10 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    final _colorScheme = Theme.of(context).colorScheme;
-    final _textTheme = Theme.of(context).textTheme;
-
     // we call also wrap safearea with material
     return SafeArea(
       child: Scaffold(
-        backgroundColor: _colorScheme.background,
+        backgroundColor: Theme.of(context).colorScheme.background,
         body: SingleChildScrollView(
           physics: const ScrollPhysics(
             parent: BouncingScrollPhysics(),
@@ -79,185 +76,194 @@ class _LoginPageState extends State<LoginPage> {
                 //Logo box
                 SizedBox(
                   height: (MediaQuery.of(context).size.height / 10) * 4,
+                  width: MediaQuery.of(context).size.width,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      "WeightTracker"
-                          .text
-                          .xl4
-                          .bold
-                          .color(Colors.deepPurple)
-                          .center
-                          .makeCentered(),
+                      Text(
+                        "WeightTracker",
+                        style: Theme.of(context).textTheme.headline1!.copyWith(
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                      ),
                       Text(
                         "weigh every moment",
-                        style: _textTheme.headline6?.copyWith(
-                            wordSpacing: 12,
-                            letterSpacing: 2,
-                            fontWeight: FontWeight.bold),
+                        style: Theme.of(context).textTheme.headline6?.copyWith(
+                              wordSpacing: 12,
+                              letterSpacing: 2,
+                              fontSize: 16,
+                            ),
                       ),
                     ],
                   ),
                 ),
 
                 //form box
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Obx(
-                      () => Text(
-                          "Welcome ${loginPageStateController.loginEmailValue.value}"),
-                    ),
-                    TextFormField(
-                      focusNode: node1,
-                      controller: emailsController,
-                      keyboardType: TextInputType.emailAddress,
-                      textInputAction: TextInputAction.next,
-                      onFieldSubmitted: (_) {
-                        FocusScope.of(context).requestFocus(node2);
-                        // setState(() {});
-                      },
-                      decoration: InputDecoration(
-                        hintText: "Enter Email",
-                        labelText: "EMAIL",
-                        labelStyle: TextStyle(
-                          color: node1.hasFocus
-                              ? Colors.deepPurple
-                              : const Color(0xFF909090),
+                SizedBox(
+                  width: (MediaQuery.of(context).size.width / 4) * 3,
+                  height: (MediaQuery.of(context).size.height / 100) * 56,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Obx(
+                        () => Text(
+                          "Welcome ${loginPageStateController.loginEmailValue.value}",
+                          style: Theme.of(context).textTheme.bodyText2,
                         ),
                       ),
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return "Email cannot be empty";
-                        }
-                        if (!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
-                            .hasMatch(value)) {
-                          return "Please enter valid email";
-                        }
-                        return null;
-                      },
-                      onChanged: (value) {
-                        // emails = emailsController.text;
-                        // welcomeProvider.onChangeEmail(value);
-                        loginPageStateController.loginEmailValue.value = value;
-                      },
-                    ),
-                    TextFormField(
-                      focusNode: node2,
-                      controller: passwordsController,
-                      obscureText: !_passwordVisible,
-                      decoration: InputDecoration(
-                        suffixIcon: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              _passwordVisible = !_passwordVisible;
-                            });
-                          },
-                          icon: Icon(
-                            _passwordVisible
-                                ? Icons.visibility
-                                : Icons.visibility_off,
+                      //
+                      //email row
+                      TextFormField(
+                        focusNode: node1,
+                        controller: emailsController,
+                        keyboardType: TextInputType.emailAddress,
+                        textInputAction: TextInputAction.next,
+                        onFieldSubmitted: (_) {
+                          FocusScope.of(context).requestFocus(node2);
+                          // setState(() {});
+                        },
+                        decoration: InputDecoration(
+                          hintText: "Enter Email",
+                          labelText: "EMAIL",
+                          labelStyle: TextStyle(
+                            color: node1.hasFocus
+                                ? Colors.deepPurple
+                                : const Color(0xFF909090),
                           ),
                         ),
-                        hintText: "Enter Password",
-                        labelText: "PASSWORD",
-                        labelStyle: TextStyle(
-                          color: node2.hasFocus
-                              ? Colors.deepPurple
-                              : const Color(0xFF909090),
-                        ),
-                      ),
-                      validator: (value) {
-                        RegExp regex = new RegExp(r'^.{6,}$');
-                        if (value!.isEmpty) {
-                          return ("Password is required for login");
-                        }
-                        if (!regex.hasMatch(value)) {
-                          return ("Enter Valid Password(Min. 6 Character)");
-                        }
-                      },
-                      onChanged: (value) {
-                        passwords = passwordsController.text;
-                      },
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      "Forgot Password?",
-                      style: _textTheme.headline6,
-                      textAlign: TextAlign.right,
-                    ).wThreeForth(context),
-                    SizedBox(
-                      height: 30,
-                    ),
-                    Material(
-                      color: Colors.deepPurple,
-                      borderRadius: BorderRadius.circular(50),
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(50),
-                        onTap: () {
-                          signIn(
-                              emailsController.text, passwordsController.text);
-
-                          // moveToHome(context);
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return "Email cannot be empty";
+                          }
+                          if (!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
+                              .hasMatch(value)) {
+                            return "Please enter valid email";
+                          }
+                          return null;
                         },
-                        child: AnimatedContainer(
-                          height: 50,
-                          alignment: Alignment.center,
-                          duration: Duration(seconds: 1),
-                          width: changeButton
-                              ? 50
-                              : MediaQuery.of(context).size.width,
-                          child: changeButton
-                              ? const Icon(
-                                  Icons.done,
-                                  color: Colors.white,
-                                )
-                              : const Text(
-                                  "LOGIN",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
+                        onChanged: (value) {
+                          // emails = emailsController.text;
+                          // welcomeProvider.onChangeEmail(value);
+                          loginPageStateController.loginEmailValue.value =
+                              value;
+                        },
+                      ),
+                      //
+                      //password row
+                      TextFormField(
+                        focusNode: node2,
+                        controller: passwordsController,
+                        obscureText: !_passwordVisible,
+                        decoration: InputDecoration(
+                          suffixIcon: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                _passwordVisible = !_passwordVisible;
+                              });
+                            },
+                            icon: Icon(
+                              _passwordVisible
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                            ),
+                          ),
+                          hintText: "Enter Password",
+                          labelText: "PASSWORD",
+                          labelStyle: TextStyle(
+                            color: node2.hasFocus
+                                ? Colors.deepPurple
+                                : const Color(0xFF909090),
+                          ),
+                        ),
+                        validator: (value) {
+                          RegExp regex = new RegExp(r'^.{6,}$');
+                          if (value!.isEmpty) {
+                            return ("Password is required for login");
+                          }
+                          if (!regex.hasMatch(value)) {
+                            return ("Enter Valid Password(Min. 6 Character)");
+                          }
+                        },
+                        onChanged: (value) {
+                          passwords = passwordsController.text;
+                        },
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      SizedBox(
+                        width: (MediaQuery.of(context).size.width / 4) * 3,
+                        child: Text(
+                          "Forgot Password?",
+                          style: Theme.of(context).textTheme.headline6,
+                          textAlign: TextAlign.right,
                         ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-
-                    //
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Don't have an account.",
-                          style: _textTheme.headline6,
-                        ),
-                        GestureDetector(
+                      const SizedBox(
+                        height: 30,
+                      ),
+                      //
+                      //login button
+                      Material(
+                        color: Colors.deepPurple,
+                        borderRadius: BorderRadius.circular(13),
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(13),
                           onTap: () {
-                            Navigator.pushReplacement(
-                              context,
-                              _createRoute(),
-                            );
+                            signIn(emailsController.text,
+                                passwordsController.text);
+
+                            // moveToHome(context);
                           },
-                          child: "Sign up"
-                              .text
-                              .bold
-                              .color(Colors.deepPurple)
-                              .textStyle(
-                                const TextStyle(
-                                  fontSize: 15,
-                                ),
-                              )
-                              .make(),
+                          child: AnimatedContainer(
+                            height: 55,
+                            alignment: Alignment.center,
+                            duration: Duration(seconds: 1),
+                            width: changeButton
+                                ? 55
+                                : MediaQuery.of(context).size.width,
+                            child: changeButton
+                                ? const Icon(
+                                    Icons.done,
+                                    color: Colors.white,
+                                  )
+                                : Text(
+                                    "LOGIN",
+                                    style:
+                                        Theme.of(context).textTheme.headline2,
+                                  ),
+                          ),
                         ),
-                      ],
-                    ),
-                  ],
-                ).wThreeForth(context).h56(context),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+
+                      //
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Don't have an account.",
+                            style: Theme.of(context).textTheme.headline6,
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.pushReplacement(
+                                context,
+                                _createRoute(),
+                              );
+                            },
+                            child: Text(
+                              "Sign up",
+                              style: Theme.of(context).textTheme.subtitle2,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
@@ -299,7 +305,12 @@ class _LoginPageState extends State<LoginPage> {
           .then((uid) => {
                 changeButton = true,
                 ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: "Signed in successfully".text.make())),
+                  const SnackBar(
+                    content: Text(
+                      "Signed in successfully",
+                    ),
+                  ),
+                ),
                 loginPageStateController.loginEmailValue.value = '',
                 Navigator.of(context).pushReplacement(
                     MaterialPageRoute(builder: (context) => HomePage())),

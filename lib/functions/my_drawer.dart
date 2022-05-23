@@ -47,14 +47,20 @@ class MyDrawer extends StatelessWidget {
                 ),
               ),
             ),
-            const ListTile(
-              leading:
-                  Icon(CupertinoIcons.profile_circled, color: Colors.white),
-              title: Text(
-                "Profile",
-                textScaleFactor: 1.2,
-                style: TextStyle(
-                  color: Colors.white,
+            InkWell(
+              onTap:(){
+                Get.back();
+                Get.toNamed('/profilePage');
+              },
+              child: const ListTile(
+                leading:
+                    Icon(CupertinoIcons.profile_circled, color: Colors.white),
+                title: Text(
+                  "Profile",
+                  textScaleFactor: 1.2,
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),

@@ -16,6 +16,8 @@ class SettingsPage extends StatefulWidget {
   State<SettingsPage> createState() => _SettingsPageState();
 }
 
+enum display_values { value1, value2 }
+
 class _SettingsPageState extends State<SettingsPage> {
   bool whichLanguage = true;
   bool addNumber = true;
@@ -28,6 +30,8 @@ class _SettingsPageState extends State<SettingsPage> {
   final SettingsPageController settingsPageController =
       Get.put(SettingsPageController());
   FocusNode phoneNumberNode = FocusNode();
+
+  display_values display = display_values.value1;
 
   //BASIC UNIT IS KG
   final Map MassList = {
@@ -254,7 +258,116 @@ class _SettingsPageState extends State<SettingsPage> {
                     ],
                   ),
                 ),
-              
+                //
+                //DISPLAY SETTINGS
+                Container(
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                  ),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      //
+                      //main heading
+                      const Text(
+                        "Display settings",
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      //
+                      //first display row
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          // Image.asset(
+                          //   'assets/display_settings_images/display_image1.png',
+                          //   height: 84,
+                          //   width: (MediaQuery.of(context).size.width) - 80,
+                          // ),
+                          Container(
+                            width: (MediaQuery.of(context).size.width) - 90,
+                            height: 75,
+                            decoration: const BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage(
+                                  'assets/display_settings_images/display_image1.png',
+                                ),
+                                fit: BoxFit.fill,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            // color: Colors.red,
+                            child: Radio(
+                              value: display_values.value1,
+                              groupValue: display,
+                              onChanged: (obj) {
+                                setState(() {
+                                  display = display_values.value1;
+                                });
+                              },
+                            ),
+                          )
+                        ],
+                      ),
+
+                      //
+                      //second display row
+                      Row(
+                        children: [
+                          Container(
+                            width: (MediaQuery.of(context).size.width) - 90,
+                            height: 75,
+                            child: ListTile(
+                              contentPadding: EdgeInsets.zero,
+                              leading: Container(
+                                height: 56,
+                                width: 56,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(120),
+                                  color: Colors.deepPurple,
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    '59.00 kg',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              title: Text('18-05-2022'),
+                              subtitle: Text('13:20:48'),
+                              trailing: Text('WED'),
+                            ),
+                          ),
+                          Container(
+                            // color: Colors.red,
+                            child: Radio(
+                              value: display_values.value2,
+                              groupValue: display,
+                              onChanged: (obj) {
+                                setState(() {
+                                  display = display_values.value2;
+                                });
+                              },
+                            ),
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+
                 //
                 //SECURITY SETTINGS
                 // Container(child: ,),

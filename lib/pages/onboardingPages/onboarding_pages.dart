@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:try1_something/onboarding_values.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:try1_something/utils/themes.dart';
 
 class OnboardingPages extends StatefulWidget {
   const OnboardingPages({Key? key}) : super(key: key);
@@ -24,7 +25,7 @@ class _OnboardingPagesState extends State<OnboardingPages> {
 
   Future<void> setData() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    await preferences.setInt('initScreen', 1);
+    await preferences.setInt('initOnboardScreen', 1);
   }
 
   @override
@@ -61,15 +62,16 @@ class _OnboardingPagesState extends State<OnboardingPages> {
             // ),
 
             //
+            //background image 
             Opacity(
               opacity: 0.2,
-              child: Container(
-                width: MediaQuery.of(context).size.width + 30,
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height,
                 child: FittedBox(
                   fit: BoxFit.fill,
                   child: Image.asset(
-                    'assets/background.jpg',
+                    'assets/onboarding_background_image/background.jpg',
                   ),
                 ),
               ),
@@ -107,7 +109,7 @@ class _OnboardingPagesState extends State<OnboardingPages> {
                                   (onboardingValues.length - 1)) {
                                 _controller!.animateToPage(
                                   onboardingValues.length,
-                                  duration: Duration(
+                                  duration: const Duration(
                                     milliseconds: 400,
                                   ),
                                   curve: Curves.bounceIn,
@@ -192,6 +194,8 @@ class _OnboardingPagesState extends State<OnboardingPages> {
                   //bottom column
                   Column(
                     children: [
+                      //represents three dots of
+                      //navigation page
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: List.generate(
@@ -224,7 +228,7 @@ class _OnboardingPagesState extends State<OnboardingPages> {
                           color: const Color.fromARGB(199, 104, 58, 183),
                           child: InkWell(
                             borderRadius: BorderRadius.circular(13),
-                            splashColor: Color.fromARGB(73, 255, 255, 255),
+                            splashColor: MyThemes.splashColor1,
                             onTap: () {
                               if (currentIndex == onboardingValues.length - 1) {
                                 Get.offNamed('/firstPage');
