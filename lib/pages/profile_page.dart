@@ -208,6 +208,5 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<void> readImageFromFirebase() async {
     final FirebaseStorage storage = FirebaseStorage.instance;
-    
   }
 }
