@@ -108,6 +108,7 @@ class _LoginPageState extends State<LoginPage> {
                       Obx(
                         () => Text(
                           "Welcome ${loginPageStateController.loginEmailValue.value}",
+                          textAlign: TextAlign.center,
                           style: Theme.of(context).textTheme.bodyText2,
                         ),
                       ),
@@ -189,18 +190,39 @@ class _LoginPageState extends State<LoginPage> {
                         },
                       ),
                       const SizedBox(
-                        height: 10,
+                        height: 5,
                       ),
-                      SizedBox(
-                        width: (MediaQuery.of(context).size.width / 4) * 3,
-                        child: Text(
-                          "Forgot Password?",
-                          style: Theme.of(context).textTheme.headline6,
-                          textAlign: TextAlign.right,
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          InkWell(
+                            borderRadius: BorderRadius.circular(4),
+                            splashColor: Colors.deepPurple,
+                            onTap: () {
+                              Future.delayed(const Duration(milliseconds: 100),
+                                  () {
+                                Get.toNamed('/forgotPasswordPage');
+                              });
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 4,
+                              ),
+                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(4),),
+                              // color: Colors.green,
+                              // width: (MediaQuery.of(context).size.width),
+                              child: Text(
+                                "Forgot Password?",
+                                style: Theme.of(context).textTheme.headline6,
+                                textAlign: TextAlign.right,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                       const SizedBox(
-                        height: 30,
+                        height: 20,
                       ),
                       //
                       //login button

@@ -9,13 +9,17 @@ import 'package:velocity_x/velocity_x.dart';
 class MyDrawer extends StatelessWidget {
   String name;
   String? email;
+  String? phoneNum;
 
-  MyDrawer({Key? key, required this.name, required this.email})
-      : super(key: key);
+  MyDrawer({
+    Key? key,
+    required this.name,
+    required this.email,
+    required this.phoneNum,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-
     return Drawer(
       child: Container(
         color: Colors.deepPurple,
@@ -48,9 +52,13 @@ class MyDrawer extends StatelessWidget {
               ),
             ),
             InkWell(
-              onTap:(){
+              onTap: () {
                 Get.back();
-                Get.toNamed('/profilePage');
+                Get.toNamed('/profilePage', arguments: {
+                  'email': email,
+                  'name': name,
+                  'phoneNumber': phoneNum
+                });
               },
               child: const ListTile(
                 leading:
@@ -67,7 +75,7 @@ class MyDrawer extends StatelessWidget {
             InkWell(
               onTap: () {
                 Navigator.pop(context);
-                Get.toNamed('/settingsPage',arguments: {'email':email});
+                Get.toNamed('/settingsPage', arguments: {'email': email});
               },
               child: const ListTile(
                 leading:

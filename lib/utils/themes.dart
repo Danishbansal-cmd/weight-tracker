@@ -62,7 +62,6 @@ class MyThemes {
             color: Colors.white,
             letterSpacing: 1.1,
           ),
-          
           subtitle2: TextStyle(
             fontFamily: 'Alatsi-Regular',
             fontSize: 15,
@@ -115,4 +114,12 @@ class MyThemes {
       );
 
   static const splashColor1 = Colors.white54;
+  static const errorStyle = TextStyle(
+    color: Colors.red,
+    fontSize: 12,
+  );
+  static const font16 = TextStyle(
+    color: Colors.black,
+    fontSize: 16,
+  );
 }

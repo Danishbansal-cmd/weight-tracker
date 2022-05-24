@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:try1_something/functions/decision_tree.dart';
 import 'package:try1_something/pages/body_mass_index.dart';
 import 'package:try1_something/pages/first_page.dart';
+import 'package:try1_something/pages/forgot_password_page.dart';
 import 'package:try1_something/pages/login_page.dart';
 import 'package:try1_something/pages/home_page.dart';
 import 'package:try1_something/pages/onboardingPages/onboarding_pages.dart';
@@ -57,6 +58,7 @@ class MyApp extends StatelessWidget {
               GetPage(name: '/settingsPage', page: () => SettingsPage()),
               GetPage(name: '/bodyMassIndexPage', page: () => const BodyMassIndexPage()),
               GetPage(name: '/profilePage', page: () => ProfilePage()),
+              GetPage(name: '/forgotPasswordPage', page: () => ForgotPasswordPage()),
             ],
 
             routes: {

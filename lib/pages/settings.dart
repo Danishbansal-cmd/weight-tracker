@@ -80,299 +80,297 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     settingsPageController.emailValue.value = Get.arguments['email'];
     return Material(
-      child: SafeArea(
-        child: Scaffold(
-          appBar: AppBar(
-            title: const Text(
-              "Settings",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text(
+            "Settings",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
             ),
           ),
-          body: Container(
-            color: Colors.grey.shade200,
-            //
-            //main column
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                //
-                //first three details
-                //about the user
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 4,
-                  ),
-                  child: Column(
-                    children: [
-                      //
-                      //email container
-                      Container(
-                        color: Colors.white,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 15,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text("E-mail address"),
-                            Obx(() => Text(
-                                "${settingsPageController.emailValue.value}")),
-                          ],
-                        ),
-                      ),
-                      functionDivider(),
-                      //
-                      //phone number container
-                      Container(
-                        color: Colors.white,
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              child: Center(child: Text("Phone number")),
-                            ),
-                            Obx(
-                              () => Container(
-                                height: 47,
-                                // width: 100,
-                                child: Center(
-                                    child: Text(
-                                  settingsPageController.phoneNumberValue.value,
-                                )),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      functionDivider(),
-                      //
-                      //Full Name container
-                      Container(
-                        color: Colors.white,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 15,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text("Full Name"),
-                            Obx(() => Text(
-                                "${settingsPageController.firstNameValue.value} ${settingsPageController.secondNameValue.value}")),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+        ),
+        body: Container(
+          color: Colors.grey.shade200,
+          //
+          //main column
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              //
+              //first three details
+              //about the user
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 4,
                 ),
-                //
-                // LANGUAGE SETTINGS
-                Container(
-                  color: Colors.white,
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        "Language settings",
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
+                child: Column(
+                  children: [
+                    //
+                    //email container
+                    Container(
+                      color: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 15,
                       ),
-                      Container(
-                        margin: const EdgeInsets.only(top: 8),
-                        padding:
-                            EdgeInsets.symmetric(vertical: 3, horizontal: 3),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          color: Colors.grey.shade200,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            toggleButton(context, "English"),
-                            toggleButton(context, "German"),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                //
-                //UNIT SETTINGS
-                Container(
-                  color: Colors.white,
-                  margin: const EdgeInsets.only(
-                    top: 4,
-                    bottom: 4,
-                  ),
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        "Weigh your weight in",
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Obx(
-                        () => InkWell(
-                          onTap: () {
-                            showModalBottomSheet(
-                              // isDismissible: false,
-                              // enableDrag: false,
-                              isScrollControlled: true,
-                              backgroundColor: Colors.transparent,
-                              context: context,
-                              builder: (BuildContext context) =>
-                                  chooseWeightUnit(context),
-                            );
-                          },
-                          child: Row(
-                            children: [
-                              Text(
-                                  '${settingsPageController.currentWeightSymbol.value}'),
-                              const Padding(
-                                padding: EdgeInsets.only(top: 6),
-                                child: Icon(
-                                  CupertinoIcons.arrow_down,
-                                  size: 12,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                //
-                //DISPLAY SETTINGS
-                Container(
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                  ),
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      //
-                      //main heading
-                      const Text(
-                        "Display settings",
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      //
-                      //first display row
-                      Row(
+                      child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          // Image.asset(
-                          //   'assets/display_settings_images/display_image1.png',
-                          //   height: 84,
-                          //   width: (MediaQuery.of(context).size.width) - 80,
-                          // ),
-                          Container(
-                            width: (MediaQuery.of(context).size.width) - 90,
-                            height: 75,
-                            decoration: const BoxDecoration(
-                              image: DecorationImage(
-                                image: AssetImage(
-                                  'assets/display_settings_images/display_image1.png',
-                                ),
-                                fit: BoxFit.fill,
-                              ),
-                            ),
-                          ),
-                          Container(
-                            // color: Colors.red,
-                            child: Radio(
-                              value: display_values.value1,
-                              groupValue: display,
-                              onChanged: (obj) {
-                                setState(() {
-                                  display = display_values.value1;
-                                });
-                              },
-                            ),
-                          )
+                          Text("E-mail address"),
+                          Obx(() => Text(
+                              "${settingsPageController.emailValue.value}")),
                         ],
                       ),
-
-                      //
-                      //second display row
-                      Row(
+                    ),
+                    functionDivider(),
+                    //
+                    //phone number container
+                    Container(
+                      color: Colors.white,
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Container(
-                            width: (MediaQuery.of(context).size.width) - 90,
-                            height: 75,
-                            child: ListTile(
-                              contentPadding: EdgeInsets.zero,
-                              leading: Container(
-                                height: 56,
-                                width: 56,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(120),
-                                  color: Colors.deepPurple,
-                                ),
-                                child: Center(
+                            child: Center(child: Text("Phone number")),
+                          ),
+                          Obx(
+                            () => Container(
+                              height: 47,
+                              // width: 100,
+                              child: Center(
                                   child: Text(
-                                    '59.00 kg',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.white,
-                                    ),
+                                settingsPageController.phoneNumberValue.value,
+                              )),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    functionDivider(),
+                    //
+                    //Full Name container
+                    Container(
+                      color: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 15,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("Full Name"),
+                          Obx(() => Text(
+                              "${settingsPageController.firstNameValue.value} ${settingsPageController.secondNameValue.value}")),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              //
+              // LANGUAGE SETTINGS
+              Container(
+                color: Colors.white,
+                padding:
+                    const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "Language settings",
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(top: 8),
+                      padding:
+                          EdgeInsets.symmetric(vertical: 3, horizontal: 3),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        color: Colors.grey.shade200,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          toggleButton(context, "English"),
+                          toggleButton(context, "German"),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              //
+              //UNIT SETTINGS
+              Container(
+                color: Colors.white,
+                margin: const EdgeInsets.only(
+                  top: 4,
+                  bottom: 4,
+                ),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      "Weigh your weight in",
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Obx(
+                      () => InkWell(
+                        onTap: () {
+                          showModalBottomSheet(
+                            // isDismissible: false,
+                            // enableDrag: false,
+                            isScrollControlled: true,
+                            backgroundColor: Colors.transparent,
+                            context: context,
+                            builder: (BuildContext context) =>
+                                chooseWeightUnit(context),
+                          );
+                        },
+                        child: Row(
+                          children: [
+                            Text(
+                                '${settingsPageController.currentWeightSymbol.value}'),
+                            const Padding(
+                              padding: EdgeInsets.only(top: 6),
+                              child: Icon(
+                                CupertinoIcons.arrow_down,
+                                size: 12,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              //
+              //DISPLAY SETTINGS
+              Container(
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                ),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    //
+                    //main heading
+                    const Text(
+                      "Display settings",
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    //
+                    //first display row
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // Image.asset(
+                        //   'assets/display_settings_images/display_image1.png',
+                        //   height: 84,
+                        //   width: (MediaQuery.of(context).size.width) - 80,
+                        // ),
+                        Container(
+                          width: (MediaQuery.of(context).size.width) - 90,
+                          height: 75,
+                          decoration: const BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage(
+                                'assets/display_settings_images/display_image1.png',
+                              ),
+                              fit: BoxFit.fill,
+                            ),
+                          ),
+                        ),
+                        Container(
+                          // color: Colors.red,
+                          child: Radio(
+                            value: display_values.value1,
+                            groupValue: display,
+                            onChanged: (obj) {
+                              setState(() {
+                                display = display_values.value1;
+                              });
+                            },
+                          ),
+                        )
+                      ],
+                    ),
+
+                    //
+                    //second display row
+                    Row(
+                      children: [
+                        Container(
+                          width: (MediaQuery.of(context).size.width) - 90,
+                          height: 75,
+                          child: ListTile(
+                            contentPadding: EdgeInsets.zero,
+                            leading: Container(
+                              height: 56,
+                              width: 56,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(120),
+                                color: Colors.deepPurple,
+                              ),
+                              child: Center(
+                                child: Text(
+                                  '59.00 kg',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.white,
                                   ),
                                 ),
                               ),
-                              title: Text('18-05-2022'),
-                              subtitle: Text('13:20:48'),
-                              trailing: Text('WED'),
                             ),
+                            title: Text('18-05-2022'),
+                            subtitle: Text('13:20:48'),
+                            trailing: Text('WED'),
                           ),
-                          Container(
-                            // color: Colors.red,
-                            child: Radio(
-                              value: display_values.value2,
-                              groupValue: display,
-                              onChanged: (obj) {
-                                setState(() {
-                                  display = display_values.value2;
-                                });
-                              },
-                            ),
-                          )
-                        ],
-                      ),
-                    ],
-                  ),
+                        ),
+                        Container(
+                          // color: Colors.red,
+                          child: Radio(
+                            value: display_values.value2,
+                            groupValue: display,
+                            onChanged: (obj) {
+                              setState(() {
+                                display = display_values.value2;
+                              });
+                            },
+                          ),
+                        )
+                      ],
+                    ),
+                  ],
                 ),
+              ),
 
-                //
-                //SECURITY SETTINGS
-                // Container(child: ,),
-              ],
-            ),
+              //
+              //SECURITY SETTINGS
+              // Container(child: ,),
+            ],
           ),
         ),
       ),

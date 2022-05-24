@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:try1_something/routes/routes.dart';
 
 class FirstPage extends StatelessWidget {
@@ -41,7 +42,7 @@ class FirstPage extends StatelessWidget {
             //
             //buttons box on the bottom
             SizedBox(
-              height: (MediaQuery.of(context).size.height / 100 ) * 20,
+              height: (MediaQuery.of(context).size.height / 100) * 20,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -56,7 +57,12 @@ class FirstPage extends StatelessWidget {
                         splashColor: Colors.white,
                         borderRadius: BorderRadius.circular(13),
                         onTap: () {
-                          Navigator.pushNamed(context, MyRoutes.signupPage);
+                          Future.delayed(
+                            const Duration(milliseconds: 100),
+                            () {
+                              Get.toNamed('/signupPage');
+                            },
+                          );
                         },
                         child: Container(
                           height: 55,
@@ -96,13 +102,12 @@ class FirstPage extends StatelessWidget {
                         splashColor: Colors.deepPurple,
                         borderRadius: BorderRadius.circular(13),
                         onTap: () {
-                          Navigator.pushNamed(context, MyRoutes.loginPage);
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (context) => LoginPage(),
-                          //   ),
-                          // );
+                          Future.delayed(
+                            const Duration(milliseconds: 100),
+                            () {
+                              Get.toNamed('/loginPage');
+                            },
+                          );
                         },
                         child: Container(
                           width: double.infinity,
@@ -110,10 +115,12 @@ class FirstPage extends StatelessWidget {
                           child: Center(
                             child: Text(
                               "LOGIN",
-                              style:
-                                  Theme.of(context).textTheme.headline2!.copyWith(
-                                        color: _colorScheme.primary,
-                                      ),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline2!
+                                  .copyWith(
+                                    color: _colorScheme.primary,
+                                  ),
                               textAlign: TextAlign.center,
                             ),
                           ),

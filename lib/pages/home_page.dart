@@ -130,447 +130,446 @@ class _HomePageState extends State<HomePage> {
 
     String fullName = "${loggedInUser.firstName} ${loggedInUser.secondName}";
     return Material(
-      child: SafeArea(
-        child: Scaffold(
-          drawer: MyDrawer(
-            name: fullName,
-            email: loggedInUser.email,
-            // homePressed: homeButtonMethod(context),
+      child: Scaffold(
+        drawer: MyDrawer(
+          name: fullName,
+          email: loggedInUser.email,
+          phoneNum: loggedInUser.phoneNumber,
+          // homePressed: homeButtonMethod(context),
+        ),
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: Colors.deepPurple,
+          onPressed: () {
+            setState(() {
+              weightController.clear();
+            });
+            actionButtonMethod();
+          },
+          child: const Icon(
+            CupertinoIcons.add,
+            color: Colors.white,
           ),
-          floatingActionButton: FloatingActionButton(
-            backgroundColor: Colors.deepPurple,
-            onPressed: () {
-              setState(() {
-                weightController.clear();
-              });
-              actionButtonMethod();
-            },
-            child: const Icon(
-              CupertinoIcons.add,
-              color: Colors.white,
-            ),
-          ),
-          appBar: AppBar(
-            centerTitle: true,
-            title: "Weight Tracker"
-                .text
-                .textStyle(
-                  const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                )
-                .make(),
-            actions: [
-              Switch.adaptive(
-                value: homeThemeManager.themeMode == ThemeMode.dark,
-                onChanged: (value) {
-                  final provider =
-                      Provider.of<ThemeManager>(context, listen: false);
-                  provider.toggleTheme(value);
-                },
-              )
-            ],
-          ),
-          body: Container(
-            child: Column(
-              children: [
-                //
-                //Progress column
-                Stack(
-                  children: [
-                    //
-                    //main container to hold all
-                    //chart data
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 7,
-                        vertical: 7,
-                      ),
-                      margin: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                      ).copyWith(
-                        top: 10,
-                      ),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.white,
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Color.fromARGB(17, 0, 0, 0),
-                            blurRadius: 10.0,
-                            spreadRadius: 6.0,
-                            offset: Offset(0.0, 0.0),
-                          ),
-                        ],
-                      ),
-                      height: 220,
-                      child: returnLineChartOfWeights(),
-                    ),
-
-                    //
-                    //container to show
-                    //circular progress bar on it
-                    Obx(
-                      () => Visibility(
-                        visible: homePageController.dayAndWeightData.isEmpty,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 7,
-                            vertical: 7,
-                          ),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.white,
-                          ),
-                          margin: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                          ).copyWith(
-                            top: 10,
-                          ),
-                          height: 220,
-                          width: MediaQuery.of(context).size.width,
-                          child: Center(
-                            child: CircularProgressIndicator(
-                              backgroundColor: Colors.red,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+        ),
+        appBar: AppBar(
+          centerTitle: true,
+          title: "Weight Tracker"
+              .text
+              .textStyle(
+                const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
                 ),
-
-                // //GETTING DATA FROM SERVER (SECOND METHOD)
-                // StreamBuilder<QuerySnapshot>(
-                //   stream: FirebaseFirestore.instance
-                //       .collection("users")
-                //       .doc(user!.uid)
-                //       .collection("weights")
-                //       .snapshots(),
-                //   builder: (context, AsyncSnapshot snapshot) {
-                //     if (!snapshot.hasData) {
-                //       return const Text('Loading data.. Please Wait');
-                //     }
-                //     return GridView.builder(
-                //       gridDelegate:
-                //           const SliverGridDelegateWithFixedCrossAxisCount(
-                //         crossAxisCount: 2,
-                //         crossAxisSpacing: 10,
-                //         mainAxisSpacing: 10,
-                //       ),
-                //       itemCount: snapshot.data.docs.length,
-                //       itemBuilder: (context, index) {
-                //         final item = snapshot.data.docs[index];
-                //         return Card(
-                //           color: Vx.gray200,
-                //           child: Container(
-                //             child: Column(
-                //               children: [
-                //                 "${item.id}"
-                //                     .substring(0, 10)
-                //                     .text
-                //                     .bold
-                //                     .textStyle(
-                //                       const TextStyle(
-                //                         fontSize: 16,
-                //                         letterSpacing: 2,
-                //                       ),
-                //                     )
-                //                     .make(),
-                //                 Padding(
-                //                   padding:
-                //                       const EdgeInsets.symmetric(vertical: 8),
-                //                   child: Row(
-                //                     mainAxisAlignment: MainAxisAlignment.center,
-                //                     children: [
-                //                       const Icon(
-                //                         CupertinoIcons.clock_fill,
-                //                         color: Colors.black,
-                //                       ),
-                //                       "${item.id}"
-                //                           .substring(10, 19)
-                //                           .text
-                //                           .center
-                //                           .make(),
-                //                     ],
-                //                   ),
-                //                 ),
-                //                 Expanded(
-                //                   child: Container(
-                //                     color: Colors.red,
-                //                     child: "${item['weight']} ${unit}"
-                //                         .text
-                //                         .center
-                //                         .textStyle(
-                //                           const TextStyle(
-                //                             fontSize: 20,
-                //                             color: Colors.black,
-                //                           ),
-                //                         )
-                //                         .make()
-                //                         .expand(),
-                //                   ).centered(),
-                //                 ),
-                //               ],
-                //             ),
-                //           ).py16(),
-                //         );
-                //       },
-                //     ).expand();
-                //   },
-                // ),
-
-                //ANOTHER STREAM BUILDER
-                isLoading
-                    ? Expanded(
-                        child: ListView.separated(
-                          itemBuilder: (context, index) => shimmerEffect(),
-                          separatorBuilder: (context, index) => 10.heightBox,
-                          itemCount: 6,
+              )
+              .make(),
+          actions: [
+            Switch.adaptive(
+              value: homeThemeManager.themeMode == ThemeMode.dark,
+              onChanged: (value) {
+                final provider =
+                    Provider.of<ThemeManager>(context, listen: false);
+                provider.toggleTheme(value);
+              },
+            )
+          ],
+        ),
+        body: Container(
+          child: Column(
+            children: [
+              //
+              //Progress column
+              Stack(
+                children: [
+                  //
+                  //main container to hold all
+                  //chart data
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 7,
+                      vertical: 7,
+                    ),
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                    ).copyWith(
+                      top: 10,
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.white,
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Color.fromARGB(17, 0, 0, 0),
+                          blurRadius: 10.0,
+                          spreadRadius: 6.0,
+                          offset: Offset(0.0, 0.0),
                         ),
-                      )
-                    : StreamBuilder<QuerySnapshot>(
-                        stream: FirebaseFirestore.instance
-                            .collection("users")
-                            .doc(user!.uid)
-                            .collection("weights")
-                            .snapshots(),
-                        builder: (context, AsyncSnapshot snapshot) {
-                          if (!snapshot.hasData) {
-                            //adding data to this list(dayAndWeightData)
+                      ],
+                    ),
+                    height: 220,
+                    child: returnLineChartOfWeights(),
+                  ),
 
-                            return Expanded(
-                              child: ListView.separated(
-                                physics: const ScrollPhysics(
-                                  parent: BouncingScrollPhysics(),
-                                ),
-                                itemBuilder: (context, index) =>
-                                    shimmerEffect(),
-                                separatorBuilder: (context, index) =>
-                                    10.heightBox,
-                                itemCount: 6,
+                  //
+                  //container to show
+                  //circular progress bar on it
+                  Obx(
+                    () => Visibility(
+                      visible: homePageController.dayAndWeightData.isEmpty,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 7,
+                          vertical: 7,
+                        ),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.white,
+                        ),
+                        margin: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                        ).copyWith(
+                          top: 10,
+                        ),
+                        height: 220,
+                        width: MediaQuery.of(context).size.width,
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            backgroundColor: Colors.red,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+
+              // //GETTING DATA FROM SERVER (SECOND METHOD)
+              // StreamBuilder<QuerySnapshot>(
+              //   stream: FirebaseFirestore.instance
+              //       .collection("users")
+              //       .doc(user!.uid)
+              //       .collection("weights")
+              //       .snapshots(),
+              //   builder: (context, AsyncSnapshot snapshot) {
+              //     if (!snapshot.hasData) {
+              //       return const Text('Loading data.. Please Wait');
+              //     }
+              //     return GridView.builder(
+              //       gridDelegate:
+              //           const SliverGridDelegateWithFixedCrossAxisCount(
+              //         crossAxisCount: 2,
+              //         crossAxisSpacing: 10,
+              //         mainAxisSpacing: 10,
+              //       ),
+              //       itemCount: snapshot.data.docs.length,
+              //       itemBuilder: (context, index) {
+              //         final item = snapshot.data.docs[index];
+              //         return Card(
+              //           color: Vx.gray200,
+              //           child: Container(
+              //             child: Column(
+              //               children: [
+              //                 "${item.id}"
+              //                     .substring(0, 10)
+              //                     .text
+              //                     .bold
+              //                     .textStyle(
+              //                       const TextStyle(
+              //                         fontSize: 16,
+              //                         letterSpacing: 2,
+              //                       ),
+              //                     )
+              //                     .make(),
+              //                 Padding(
+              //                   padding:
+              //                       const EdgeInsets.symmetric(vertical: 8),
+              //                   child: Row(
+              //                     mainAxisAlignment: MainAxisAlignment.center,
+              //                     children: [
+              //                       const Icon(
+              //                         CupertinoIcons.clock_fill,
+              //                         color: Colors.black,
+              //                       ),
+              //                       "${item.id}"
+              //                           .substring(10, 19)
+              //                           .text
+              //                           .center
+              //                           .make(),
+              //                     ],
+              //                   ),
+              //                 ),
+              //                 Expanded(
+              //                   child: Container(
+              //                     color: Colors.red,
+              //                     child: "${item['weight']} ${unit}"
+              //                         .text
+              //                         .center
+              //                         .textStyle(
+              //                           const TextStyle(
+              //                             fontSize: 20,
+              //                             color: Colors.black,
+              //                           ),
+              //                         )
+              //                         .make()
+              //                         .expand(),
+              //                   ).centered(),
+              //                 ),
+              //               ],
+              //             ),
+              //           ).py16(),
+              //         );
+              //       },
+              //     ).expand();
+              //   },
+              // ),
+
+              //ANOTHER STREAM BUILDER
+              isLoading
+                  ? Expanded(
+                      child: ListView.separated(
+                        itemBuilder: (context, index) => shimmerEffect(),
+                        separatorBuilder: (context, index) => 10.heightBox,
+                        itemCount: 6,
+                      ),
+                    )
+                  : StreamBuilder<QuerySnapshot>(
+                      stream: FirebaseFirestore.instance
+                          .collection("users")
+                          .doc(user!.uid)
+                          .collection("weights")
+                          .snapshots(),
+                      builder: (context, AsyncSnapshot snapshot) {
+                        if (!snapshot.hasData) {
+                          //adding data to this list(dayAndWeightData)
+
+                          return Expanded(
+                            child: ListView.separated(
+                              physics: const ScrollPhysics(
+                                parent: BouncingScrollPhysics(),
                               ),
-                            );
-                          }
-
-                          return ListView.builder(
-                            physics: const ScrollPhysics(
-                              parent: BouncingScrollPhysics(),
+                              itemBuilder: (context, index) =>
+                                  shimmerEffect(),
+                              separatorBuilder: (context, index) =>
+                                  10.heightBox,
+                              itemCount: 6,
                             ),
-                            itemCount: snapshot.data.docs.length,
-                            itemBuilder: (context, index) {
-                              final item = snapshot.data.docs[index];
-                              var day = item.id.substring(8, 10) +
-                                  "-" +
-                                  item.id.substring(5, 7) +
-                                  "-" +
-                                  item.id.substring(0, 4);
-                              var removeZero;
-                              if (item['weight'].toString().contains(".0")) {
-                                removeZero = item['weight']
-                                    .toString()
-                                    .replaceAll(".0", "");
-                              } else {
-                                removeZero = item['weight'].toString();
-                              }
-                              return Dismissible(
-                                key: UniqueKey(),
-                                background: Container(
-                                  color: Colors.red,
+                          );
+                        }
+
+                        return ListView.builder(
+                          physics: const ScrollPhysics(
+                            parent: BouncingScrollPhysics(),
+                          ),
+                          itemCount: snapshot.data.docs.length,
+                          itemBuilder: (context, index) {
+                            final item = snapshot.data.docs[index];
+                            var day = item.id.substring(8, 10) +
+                                "-" +
+                                item.id.substring(5, 7) +
+                                "-" +
+                                item.id.substring(0, 4);
+                            var removeZero;
+                            if (item['weight'].toString().contains(".0")) {
+                              removeZero = item['weight']
+                                  .toString()
+                                  .replaceAll(".0", "");
+                            } else {
+                              removeZero = item['weight'].toString();
+                            }
+                            return Dismissible(
+                              key: UniqueKey(),
+                              background: Container(
+                                color: Colors.red,
+                              ),
+                              onDismissed: (direction) {
+                                setState(() {
+                                  FirebaseFirestore.instance
+                                      .collection("users")
+                                      .doc(user!.uid)
+                                      .collection("weights")
+                                      .doc(item.id)
+                                      .delete()
+                                      .then((value) => print(
+                                          "success\nsuccess\nsuccesnsuccess"));
+                                });
+                              },
+                              direction: DismissDirection.endToStart,
+                              child: Container(
+                                height: 110,
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 5, horizontal: 5),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(60),
                                 ),
-                                onDismissed: (direction) {
-                                  setState(() {
-                                    FirebaseFirestore.instance
-                                        .collection("users")
-                                        .doc(user!.uid)
-                                        .collection("weights")
-                                        .doc(item.id)
-                                        .delete()
-                                        .then((value) => print(
-                                            "success\nsuccess\nsuccesnsuccess"));
-                                  });
-                                },
-                                direction: DismissDirection.endToStart,
-                                child: Container(
-                                  height: 110,
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 5, horizontal: 5),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(60),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      //
-                                      //FIRST CIRCLE
-                                      Container(
-                                        height: 100,
-                                        width: 100,
-                                        decoration: BoxDecoration(
-                                          color: Colors.deepPurple,
-                                          borderRadius:
-                                              BorderRadius.circular(300),
-                                        ),
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Obx(
-                                              () => Text(
-                                                "${(double.parse(removeZero) / settingsPageController.currentWeightMultiplier.value).toStringAsFixed(2)} ${settingsPageController.currentWeightSymbol.value}",
-                                                textAlign: TextAlign.center,
-                                                style: const TextStyle(
-                                                  fontSize: 18,
-                                                  color: Colors.white,
-                                                  letterSpacing: 1,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
+                                child: Row(
+                                  children: [
+                                    //
+                                    //FIRST CIRCLE
+                                    Container(
+                                      height: 100,
+                                      width: 100,
+                                      decoration: BoxDecoration(
+                                        color: Colors.deepPurple,
+                                        borderRadius:
+                                            BorderRadius.circular(300),
+                                      ),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Obx(
+                                            () => Text(
+                                              "${(double.parse(removeZero) / settingsPageController.currentWeightMultiplier.value).toStringAsFixed(2)} ${settingsPageController.currentWeightSymbol.value}",
+                                              textAlign: TextAlign.center,
+                                              style: const TextStyle(
+                                                fontSize: 18,
+                                                color: Colors.white,
+                                                letterSpacing: 1,
+                                                fontWeight: FontWeight.bold,
                                               ),
                                             ),
-                                          ],
-                                        ),
+                                          ),
+                                        ],
                                       ),
-                                      //
-                                      //DETAILS
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(5),
-                                        ),
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 5, horizontal: 20),
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                const Icon(
-                                                  CupertinoIcons.calendar,
-                                                  size: 18,
-                                                ),
-                                                5.widthBox,
-                                                "${item['date']}"
-                                                    .text
-                                                    .bold
-                                                    .textStyle(
-                                                      const TextStyle(
-                                                        fontSize: 16,
-                                                      ),
+                                    ),
+                                    //
+                                    //DETAILS
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(5),
+                                      ),
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 5, horizontal: 20),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              const Icon(
+                                                CupertinoIcons.calendar,
+                                                size: 18,
+                                              ),
+                                              5.widthBox,
+                                              "${item['date']}"
+                                                  .text
+                                                  .bold
+                                                  .textStyle(
+                                                    const TextStyle(
+                                                      fontSize: 16,
+                                                    ),
+                                                  )
+                                                  .make(),
+                                            ],
+                                          ),
+                                          Row(
+                                            children: [
+                                              const Icon(
+                                                CupertinoIcons.clock_fill,
+                                                size: 18,
+                                              ),
+                                              5.widthBox,
+                                              "${item.id}"
+                                                  .substring(10, 19)
+                                                  .text
+                                                  .center
+                                                  .make(),
+                                            ],
+                                          ).py8(),
+                                          Row(
+                                            children: [
+                                              index == 0
+                                                  ? const Icon(
+                                                      CupertinoIcons.equal,
+                                                      color:
+                                                          Colors.deepPurple,
+                                                      size: 18,
                                                     )
-                                                    .make(),
-                                              ],
-                                            ),
-                                            Row(
-                                              children: [
-                                                const Icon(
-                                                  CupertinoIcons.clock_fill,
-                                                  size: 18,
-                                                ),
-                                                5.widthBox,
-                                                "${item.id}"
-                                                    .substring(10, 19)
-                                                    .text
-                                                    .center
-                                                    .make(),
-                                              ],
-                                            ).py8(),
-                                            Row(
-                                              children: [
-                                                index == 0
-                                                    ? const Icon(
-                                                        CupertinoIcons.equal,
-                                                        color:
-                                                            Colors.deepPurple,
-                                                        size: 18,
-                                                      )
-                                                    : (snapshot.data.docs[index]
-                                                                ['weight']) >
-                                                            (snapshot.data.docs[
-                                                                    index - 1]
-                                                                ['weight'])
-                                                        ? const Icon(
-                                                            CupertinoIcons
-                                                                .arrow_up,
-                                                            color: Colors.green,
-                                                            size: 18,
-                                                          )
-                                                        : (snapshot.data.docs[index]
-                                                                    [
-                                                                    'weight']) ==
-                                                                (snapshot.data
-                                                                            .docs[
-                                                                        index -
-                                                                            1]
-                                                                    ['weight'])
-                                                            ? const Icon(
-                                                                CupertinoIcons
-                                                                    .equal,
-                                                                color: Colors
-                                                                    .deepPurple,
-                                                                size: 18,
-                                                              )
-                                                            : const Icon(
-                                                                CupertinoIcons
-                                                                    .arrow_down,
-                                                                color:
-                                                                    Colors.red,
-                                                                size: 18,
-                                                              ),
-                                                5.widthBox,
-                                                index == 0
-                                                    ? "0.000".text.make()
-                                                    : "${(snapshot.data.docs[index]['weight'] - snapshot.data.docs[index - 1]['weight']).abs().toStringAsFixed(3).toString()}"
-                                                        .text
-                                                        .make(),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ).expand(),
-                                      //
-                                      //DAY
-                                      Container(
-                                        height: 100,
-                                        width: 100,
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 20,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: _colorScheme.primaryVariant,
-                                          borderRadius:
-                                              BorderRadius.circular(120),
-                                        ),
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            "${item['day']}"
-                                                .substring(0, 3)
-                                                .text
-                                                .uppercase
-                                                .textStyle(
-                                                  const TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 20,
-                                                  ),
-                                                )
-                                                .make(),
-                                          ],
-                                        ),
+                                                  : (snapshot.data.docs[index]
+                                                              ['weight']) >
+                                                          (snapshot.data.docs[
+                                                                  index - 1]
+                                                              ['weight'])
+                                                      ? const Icon(
+                                                          CupertinoIcons
+                                                              .arrow_up,
+                                                          color: Colors.green,
+                                                          size: 18,
+                                                        )
+                                                      : (snapshot.data.docs[index]
+                                                                  [
+                                                                  'weight']) ==
+                                                              (snapshot.data
+                                                                          .docs[
+                                                                      index -
+                                                                          1]
+                                                                  ['weight'])
+                                                          ? const Icon(
+                                                              CupertinoIcons
+                                                                  .equal,
+                                                              color: Colors
+                                                                  .deepPurple,
+                                                              size: 18,
+                                                            )
+                                                          : const Icon(
+                                                              CupertinoIcons
+                                                                  .arrow_down,
+                                                              color:
+                                                                  Colors.red,
+                                                              size: 18,
+                                                            ),
+                                              5.widthBox,
+                                              index == 0
+                                                  ? "0.000".text.make()
+                                                  : "${(snapshot.data.docs[index]['weight'] - snapshot.data.docs[index - 1]['weight']).abs().toStringAsFixed(3).toString()}"
+                                                      .text
+                                                      .make(),
+                                            ],
+                                          ),
+                                        ],
                                       ),
-                                    ],
-                                  ),
-                                ).pOnly(top: 2, bottom: 10),
-                              );
-                            },
-                          ).expand();
-                        },
-                      ),
-              ],
-            ),
+                                    ).expand(),
+                                    //
+                                    //DAY
+                                    Container(
+                                      height: 100,
+                                      width: 100,
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 20,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: _colorScheme.primaryVariant,
+                                        borderRadius:
+                                            BorderRadius.circular(120),
+                                      ),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          "${item['day']}"
+                                              .substring(0, 3)
+                                              .text
+                                              .uppercase
+                                              .textStyle(
+                                                const TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 20,
+                                                ),
+                                              )
+                                              .make(),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ).pOnly(top: 2, bottom: 10),
+                            );
+                          },
+                        ).expand();
+                      },
+                    ),
+            ],
           ),
         ),
       ),
@@ -580,69 +579,66 @@ class _HomePageState extends State<HomePage> {
   actionButtonMethod() {
     showModalBottomSheet<void>(
         context: context,
+        backgroundColor: Colors.transparent,
         builder: (BuildContext context) {
           final _colorScheme2 = Theme.of(context).colorScheme;
 
           return Material(
-            // color: Colors.red,
+            borderRadius: const BorderRadius.only(topLeft: Radius.circular(20),topRight: Radius.circular(20),),
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 30),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   SizedBox(
-                    width: (MediaQuery.of(context).size.width / 100 ) * 64,
+                    width: (MediaQuery.of(context).size.width / 100 ) * 72,
                     child: Column(
                       children: [
                         //
                         //add weight row or form field
                         Form(
                           key: _formKey,
-                          child: Theme(
-                            data: Theme.of(context)
-                                .copyWith(primaryColor: Colors.yellow),
-                            child: TextFormField(
-                              focusNode: mynode,
-                              cursorColor: Colors.deepPurple,
-                              // style: const TextStyle(
-                              //   color: Colors.deepPurple,
-                              // ),
-                              // autofocus: true,
-                              controller: weightController,
-                              onChanged: (value) {
-                                // if (value.runtimeType == "String") {
-                                //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                //       content: "String is not allowed".text.make()));
-                                //   weightValue = '';
-                                // }
-                                weightValue = weightController.text;
-                              },
-                              keyboardType: const TextInputType.numberWithOptions(
-                                decimal: true,
+                          child: TextFormField(
+                            focusNode: mynode,
+                            cursorColor: Colors.deepPurple,
+                            // style: const TextStyle(
+                            //   color: Colors.deepPurple,
+                            // ),
+                            // autofocus: true,
+                            controller: weightController,
+                            onChanged: (value) {
+                              // if (value.runtimeType == "String") {
+                              //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              //       content: "String is not allowed".text.make()));
+                              //   weightValue = '';
+                              // }
+                              weightValue = weightController.text;
+                            },
+                            keyboardType: const TextInputType.numberWithOptions(
+                              decimal: true,
+                            ),
+                            inputFormatters: <TextInputFormatter>[
+                              FilteringTextInputFormatter.allow(
+                                  RegExp('[0-9.]'))
+                            ],
+                            decoration: InputDecoration(
+                              hintText: "Enter Weight",
+                              labelText: "WEIGHT",
+                              labelStyle: TextStyle(
+                                color: mynode.hasFocus
+                                    ? Colors.deepPurple
+                                    : const Color(0xFF909090),
                               ),
-                              inputFormatters: <TextInputFormatter>[
-                                FilteringTextInputFormatter.allow(
-                                    RegExp('[0-9.]'))
-                              ],
-                              decoration: InputDecoration(
-                                hintText: "Enter Weight",
-                                labelText: "WEIGHT",
-                                labelStyle: TextStyle(
-                                  color: mynode.hasFocus
-                                      ? Colors.deepPurple
-                                      : const Color(0xFF909090),
+                              // enabledBorder: UnderlineInputBorder(
+                              //     borderSide:
+                              //         BorderSide(color: Colors.deepPurple)),
+                              focusedBorder: const UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.deepPurple,
+                                  width: 2,
                                 ),
-                                // enabledBorder: UnderlineInputBorder(
-                                //     borderSide:
-                                //         BorderSide(color: Colors.deepPurple)),
-                                focusedBorder: const UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Colors.deepPurple,
-                                    width: 2,
-                                  ),
-                                ),
-                                // focusColor: Colors.red,
                               ),
+                              // focusColor: Colors.red,
                             ),
                           ),
                         ),
@@ -737,7 +733,7 @@ class _HomePageState extends State<HomePage> {
                       },
                       child: Container(
                         height: 55,
-                        width: (MediaQuery.of(context).size.width / 100 ) * 64,
+                        width: (MediaQuery.of(context).size.width / 100 ) * 72,
                         child: Center(
                           child: Text(
                             "Cancel",
