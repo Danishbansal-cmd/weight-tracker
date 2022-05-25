@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:try1_something/functions/decision_tree.dart';
+import 'package:try1_something/pages/analytics_page.dart';
 import 'package:try1_something/pages/body_mass_index.dart';
 import 'package:try1_something/pages/first_page.dart';
 import 'package:try1_something/pages/forgot_password_page.dart';
@@ -59,6 +60,7 @@ class MyApp extends StatelessWidget {
               GetPage(name: '/bodyMassIndexPage', page: () => const BodyMassIndexPage()),
               GetPage(name: '/profilePage', page: () => ProfilePage()),
               GetPage(name: '/forgotPasswordPage', page: () => ForgotPasswordPage()),
+              GetPage(name: '/analyticsPage', page: () => AnalyticsPage()),
             ],
 
             routes: {

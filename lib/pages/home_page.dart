@@ -31,7 +31,6 @@ class _HomePageState extends State<HomePage> {
 
   String weightValue = '';
   // double testing = 2334;
-  final _formKey = GlobalKey<FormState>();
   TextEditingController weightController = TextEditingController();
   // late Stream<QuerySnapshot> snapshot;
   bool isLoading = true;
@@ -41,7 +40,7 @@ class _HomePageState extends State<HomePage> {
 
   //
   //initializing controller
-  final homePageController = Get.put(HomePageController());
+  // final homePageController = Get.put(HomePageController());
   final SettingsPageController settingsPageController =
       Get.put(SettingsPageController());
 
@@ -78,24 +77,24 @@ class _HomePageState extends State<HomePage> {
 
     //IMPORTANT METHOD
     //GETTING DATA FROM SERVER (FIRST METHOD)
-    final _auth = FirebaseAuth.instance.currentUser;
-    final CollectionReference firebaseFirestore = FirebaseFirestore.instance
-        .collection("users")
-        .doc(user!.uid)
-        .collection("weights");
-    firebaseFirestore.get().then(
-          (value) => value.docs.forEach((element) {
-            homePageController.dayAndWeightData.add(
-              dayAndWeightDataModel(
-                day: element.id.substring(8, 10),
-                weight: element['weight'],
-              ),
-            );
-            print('each data ${element['weight']}');
-            print('each data id ${element.id.runtimeType}');
-          }),
-        );
-    print('dayAndWeightData ${homePageController.dayAndWeightData}');
+    // final _auth = FirebaseAuth.instance.currentUser;
+    // final CollectionReference firebaseFirestore = FirebaseFirestore.instance
+    //     .collection("users")
+    //     .doc(user!.uid)
+    //     .collection("weights");
+    // firebaseFirestore.get().then(
+    //       (value) => value.docs.forEach((element) {
+    //         homePageController.dayAndWeightData.add(
+    //           dayAndWeightDataModel(
+    //             day: element.id.substring(8, 10),
+    //             weight: element['weight'],
+    //           ),
+    //         );
+    //         print('each data ${element['weight']}');
+    //         print('each data id ${element.id.runtimeType}');
+    //       }),
+    //     );
+    // print('dayAndWeightData ${homePageController.dayAndWeightData}');
 
     // setState(() {
 
@@ -175,72 +174,6 @@ class _HomePageState extends State<HomePage> {
         body: Container(
           child: Column(
             children: [
-              //
-              //Progress column
-              Stack(
-                children: [
-                  //
-                  //main container to hold all
-                  //chart data
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 7,
-                      vertical: 7,
-                    ),
-                    margin: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                    ).copyWith(
-                      top: 10,
-                    ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.white,
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Color.fromARGB(17, 0, 0, 0),
-                          blurRadius: 10.0,
-                          spreadRadius: 6.0,
-                          offset: Offset(0.0, 0.0),
-                        ),
-                      ],
-                    ),
-                    height: 220,
-                    child: returnLineChartOfWeights(),
-                  ),
-
-                  //
-                  //container to show
-                  //circular progress bar on it
-                  Obx(
-                    () => Visibility(
-                      visible: homePageController.dayAndWeightData.isEmpty,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 7,
-                          vertical: 7,
-                        ),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: Colors.white,
-                        ),
-                        margin: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                        ).copyWith(
-                          top: 10,
-                        ),
-                        height: 220,
-                        width: MediaQuery.of(context).size.width,
-                        child: Center(
-                          child: CircularProgressIndicator(
-                            backgroundColor: Colors.red,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-
               // //GETTING DATA FROM SERVER (SECOND METHOD)
               // StreamBuilder<QuerySnapshot>(
               //   stream: FirebaseFirestore.instance
@@ -345,8 +278,7 @@ class _HomePageState extends State<HomePage> {
                               physics: const ScrollPhysics(
                                 parent: BouncingScrollPhysics(),
                               ),
-                              itemBuilder: (context, index) =>
-                                  shimmerEffect(),
+                              itemBuilder: (context, index) => shimmerEffect(),
                               separatorBuilder: (context, index) =>
                                   10.heightBox,
                               itemCount: 6,
@@ -354,219 +286,225 @@ class _HomePageState extends State<HomePage> {
                           );
                         }
 
-                        return ListView.builder(
-                          physics: const ScrollPhysics(
-                            parent: BouncingScrollPhysics(),
-                          ),
-                          itemCount: snapshot.data.docs.length,
-                          itemBuilder: (context, index) {
-                            final item = snapshot.data.docs[index];
-                            var day = item.id.substring(8, 10) +
-                                "-" +
-                                item.id.substring(5, 7) +
-                                "-" +
-                                item.id.substring(0, 4);
-                            var removeZero;
-                            if (item['weight'].toString().contains(".0")) {
-                              removeZero = item['weight']
-                                  .toString()
-                                  .replaceAll(".0", "");
-                            } else {
-                              removeZero = item['weight'].toString();
-                            }
-                            return Dismissible(
-                              key: UniqueKey(),
-                              background: Container(
-                                color: Colors.red,
-                              ),
-                              onDismissed: (direction) {
-                                setState(() {
-                                  FirebaseFirestore.instance
-                                      .collection("users")
-                                      .doc(user!.uid)
-                                      .collection("weights")
-                                      .doc(item.id)
-                                      .delete()
-                                      .then((value) => print(
-                                          "success\nsuccess\nsuccesnsuccess"));
-                                });
-                              },
-                              direction: DismissDirection.endToStart,
-                              child: Container(
-                                height: 110,
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 5, horizontal: 5),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(60),
+                        return Expanded(
+                          child: ListView.builder(
+                            physics: const ScrollPhysics(
+                              parent: BouncingScrollPhysics(),
+                            ),
+                            itemCount: snapshot.data.docs.length,
+                            itemBuilder: (context, index) {
+                              final item = snapshot.data.docs[index];
+                              var day = item.id.substring(8, 10) +
+                                  "-" +
+                                  item.id.substring(5, 7) +
+                                  "-" +
+                                  item.id.substring(0, 4);
+                              var removeZero;
+                              removeZero = removeDotZeroFunction(item['weight']
+                                    .toString());
+                              return Dismissible(
+                                key: UniqueKey(),
+                                background: Container(
+                                  color: Colors.red,
                                 ),
-                                child: Row(
-                                  children: [
-                                    //
-                                    //FIRST CIRCLE
-                                    Container(
-                                      height: 100,
-                                      width: 100,
-                                      decoration: BoxDecoration(
-                                        color: Colors.deepPurple,
-                                        borderRadius:
-                                            BorderRadius.circular(300),
-                                      ),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Obx(
-                                            () => Text(
-                                              "${(double.parse(removeZero) / settingsPageController.currentWeightMultiplier.value).toStringAsFixed(2)} ${settingsPageController.currentWeightSymbol.value}",
-                                              textAlign: TextAlign.center,
-                                              style: const TextStyle(
-                                                fontSize: 18,
-                                                color: Colors.white,
-                                                letterSpacing: 1,
-                                                fontWeight: FontWeight.bold,
+                                onDismissed: (direction) {
+                                  setState(() {
+                                    FirebaseFirestore.instance
+                                        .collection("users")
+                                        .doc(user!.uid)
+                                        .collection("weights")
+                                        .doc(item.id)
+                                        .delete()
+                                        .then((value) => print(
+                                            "success\nsuccess\nsuccesnsuccess"));
+                                  });
+                                },
+                                direction: DismissDirection.endToStart,
+                                child: Container(
+                                  margin: const EdgeInsets.symmetric(
+                                    vertical: 3,
+                                  ),
+                                  height: 80,
+                                  padding:
+                                      const EdgeInsets.symmetric(horizontal: 5),
+                                  decoration: BoxDecoration(
+                                    // color: Colors.green,
+                                    borderRadius: BorderRadius.circular(60),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      //
+                                      //FIRST CIRCLE
+                                      Container(
+                                        height: 80,
+                                        width: 80,
+                                        decoration: BoxDecoration(
+                                          color: Colors.deepPurple,
+                                          borderRadius:
+                                              BorderRadius.circular(300),
+                                        ),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Obx(
+                                              () => Text(
+                                                "${(double.parse(removeZero) / settingsPageController.currentWeightMultiplier.value).toStringAsFixed(2)} ${settingsPageController.currentWeightSymbol.value}",
+                                                textAlign: TextAlign.center,
+                                                style: const TextStyle(
+                                                  fontSize: 14,
+                                                  color: Colors.white,
+                                                  letterSpacing: 1,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
                                               ),
                                             ),
+                                          ],
+                                        ),
+                                      ),
+                                      //
+                                      //DETAILS
+                                      Expanded(
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(5),
                                           ),
-                                        ],
-                                      ),
-                                    ),
-                                    //
-                                    //DETAILS
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(5),
-                                      ),
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 5, horizontal: 20),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 4, horizontal: 20),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
-                                              const Icon(
-                                                CupertinoIcons.calendar,
-                                                size: 18,
-                                              ),
-                                              5.widthBox,
-                                              "${item['date']}"
-                                                  .text
-                                                  .bold
-                                                  .textStyle(
-                                                    const TextStyle(
-                                                      fontSize: 16,
+                                              Row(
+                                                children: [
+                                                  const Icon(
+                                                    CupertinoIcons.calendar,
+                                                    size: 18,
+                                                  ),
+                                                  const SizedBox(
+                                                    width: 5,
+                                                  ),
+                                                  Text(
+                                                    "${item['date']}",
+                                                    style: const TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                     ),
-                                                  )
-                                                  .make(),
-                                            ],
-                                          ),
-                                          Row(
-                                            children: [
-                                              const Icon(
-                                                CupertinoIcons.clock_fill,
-                                                size: 18,
+                                                  ),
+                                                ],
                                               ),
-                                              5.widthBox,
-                                              "${item.id}"
-                                                  .substring(10, 19)
-                                                  .text
-                                                  .center
-                                                  .make(),
-                                            ],
-                                          ).py8(),
-                                          Row(
-                                            children: [
-                                              index == 0
-                                                  ? const Icon(
-                                                      CupertinoIcons.equal,
-                                                      color:
-                                                          Colors.deepPurple,
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 8),
+                                                child: Row(
+                                                  children: [
+                                                    const Icon(
+                                                      CupertinoIcons.clock_fill,
                                                       size: 18,
-                                                    )
-                                                  : (snapshot.data.docs[index]
-                                                              ['weight']) >
-                                                          (snapshot.data.docs[
-                                                                  index - 1]
-                                                              ['weight'])
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 2,
+                                                    ),
+                                                    Text(
+                                                        "${item.id.substring(10, 19)}"),
+                                                  ],
+                                                ),
+                                              ),
+                                              Row(
+                                                children: [
+                                                  index == 0
                                                       ? const Icon(
-                                                          CupertinoIcons
-                                                              .arrow_up,
-                                                          color: Colors.green,
+                                                          CupertinoIcons.equal,
+                                                          color:
+                                                              Colors.deepPurple,
                                                           size: 18,
                                                         )
                                                       : (snapshot.data.docs[index]
-                                                                  [
-                                                                  'weight']) ==
+                                                                  ['weight']) >
                                                               (snapshot.data
                                                                           .docs[
-                                                                      index -
-                                                                          1]
+                                                                      index - 1]
                                                                   ['weight'])
                                                           ? const Icon(
                                                               CupertinoIcons
-                                                                  .equal,
-                                                              color: Colors
-                                                                  .deepPurple,
+                                                                  .arrow_up,
+                                                              color:
+                                                                  Colors.green,
                                                               size: 18,
                                                             )
-                                                          : const Icon(
-                                                              CupertinoIcons
-                                                                  .arrow_down,
-                                                              color:
-                                                                  Colors.red,
-                                                              size: 18,
-                                                            ),
-                                              5.widthBox,
-                                              index == 0
-                                                  ? "0.000".text.make()
-                                                  : "${(snapshot.data.docs[index]['weight'] - snapshot.data.docs[index - 1]['weight']).abs().toStringAsFixed(3).toString()}"
-                                                      .text
-                                                      .make(),
+                                                          : (snapshot.data.docs[
+                                                                          index][
+                                                                      'weight']) ==
+                                                                  (snapshot.data
+                                                                          .docs[index - 1]
+                                                                      ['weight'])
+                                                              ? const Icon(
+                                                                  CupertinoIcons
+                                                                      .equal,
+                                                                  color: Colors
+                                                                      .deepPurple,
+                                                                  size: 18,
+                                                                )
+                                                              : const Icon(
+                                                                  CupertinoIcons
+                                                                      .arrow_down,
+                                                                  color: Colors
+                                                                      .red,
+                                                                  size: 18,
+                                                                ),
+                                                  const SizedBox(
+                                                    width: 5,
+                                                  ),
+                                                  index == 0
+                                                      ? Text("0.000")
+                                                      : Text(
+                                                          "${(snapshot.data.docs[index]['weight'] - snapshot.data.docs[index - 1]['weight']).abs().toStringAsFixed(3).toString()}"),
+                                                ],
+                                              ),
                                             ],
                                           ),
-                                        ],
+                                        ),
                                       ),
-                                    ).expand(),
-                                    //
-                                    //DAY
-                                    Container(
-                                      height: 100,
-                                      width: 100,
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 20,
+                                      //
+                                      //DAY
+                                      Container(
+                                        height: 80,
+                                        width: 80,
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 20,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: _colorScheme.primaryVariant,
+                                          borderRadius:
+                                              BorderRadius.circular(120),
+                                        ),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              "${item['day'].substring(0, 3)}"
+                                                  .toUpperCase(),
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                      decoration: BoxDecoration(
-                                        color: _colorScheme.primaryVariant,
-                                        borderRadius:
-                                            BorderRadius.circular(120),
-                                      ),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          "${item['day']}"
-                                              .substring(0, 3)
-                                              .text
-                                              .uppercase
-                                              .textStyle(
-                                                const TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 20,
-                                                ),
-                                              )
-                                              .make(),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
-                              ).pOnly(top: 2, bottom: 10),
-                            );
-                          },
-                        ).expand();
+                              );
+                            },
+                          ),
+                        );
                       },
                     ),
             ],
@@ -584,126 +522,143 @@ class _HomePageState extends State<HomePage> {
           final _colorScheme2 = Theme.of(context).colorScheme;
 
           return Material(
-            borderRadius: const BorderRadius.only(topLeft: Radius.circular(20),topRight: Radius.circular(20),),
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+            ),
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 30),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   SizedBox(
-                    width: (MediaQuery.of(context).size.width / 100 ) * 72,
+                    width: (MediaQuery.of(context).size.width / 100) * 72,
                     child: Column(
                       children: [
                         //
                         //add weight row or form field
-                        Form(
-                          key: _formKey,
-                          child: TextFormField(
-                            focusNode: mynode,
-                            cursorColor: Colors.deepPurple,
-                            // style: const TextStyle(
-                            //   color: Colors.deepPurple,
-                            // ),
-                            // autofocus: true,
-                            controller: weightController,
-                            onChanged: (value) {
-                              // if (value.runtimeType == "String") {
-                              //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              //       content: "String is not allowed".text.make()));
-                              //   weightValue = '';
-                              // }
-                              weightValue = weightController.text;
-                            },
-                            keyboardType: const TextInputType.numberWithOptions(
-                              decimal: true,
-                            ),
-                            inputFormatters: <TextInputFormatter>[
-                              FilteringTextInputFormatter.allow(
-                                  RegExp('[0-9.]'))
-                            ],
-                            decoration: InputDecoration(
-                              hintText: "Enter Weight",
-                              labelText: "WEIGHT",
-                              labelStyle: TextStyle(
-                                color: mynode.hasFocus
-                                    ? Colors.deepPurple
-                                    : const Color(0xFF909090),
-                              ),
-                              // enabledBorder: UnderlineInputBorder(
-                              //     borderSide:
-                              //         BorderSide(color: Colors.deepPurple)),
-                              focusedBorder: const UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.deepPurple,
-                                  width: 2,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            //add weight form field
+                            SizedBox(
+                              width:
+                                  ((MediaQuery.of(context).size.width / 100) *
+                                          72) -
+                                      60,
+                              child: TextFormField(
+                                focusNode: mynode,
+                                cursorColor: Colors.deepPurple,
+                                // style: const TextStyle(
+                                //   color: Colors.deepPurple,
+                                // ),
+                                // autofocus: true,
+                                controller: weightController,
+                                onChanged: (value) {
+                                  // if (value.runtimeType == "String") {
+                                  //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                  //       content: "String is not allowed".text.make()));
+                                  //   weightValue = '';
+                                  // }
+                                  weightValue = weightController.text;
+                                },
+                                keyboardType:
+                                    const TextInputType.numberWithOptions(
+                                  decimal: true,
+                                ),
+                                inputFormatters: <TextInputFormatter>[
+                                  FilteringTextInputFormatter.allow(
+                                      RegExp('[0-9.]'))
+                                ],
+                                decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  focusedBorder: InputBorder.none,
+                                  enabledBorder: InputBorder.none,
+                                  hintText: "Enter Weight",
+                                  labelText: "WEIGHT",
+                                  labelStyle: TextStyle(
+                                    color: mynode.hasFocus
+                                        ? Colors.deepPurple
+                                        : const Color(0xFF909090),
+                                  ),
                                 ),
                               ),
-                              // focusColor: Colors.red,
                             ),
-                          ),
+                            //show weight unit
+                            //in which weight to be added
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade200,
+                                borderRadius: BorderRadius.circular(9),
+                              ),
+                              width: 50,
+                              height: 50,
+                              child: Center(
+                                child: Text(settingsPageController
+                                    .currentWeightSymbol.value),
+                              ),
+                            ),
+                          ],
                         ),
                         const SizedBox(
-                          height: 20,
+                          height: 10,
                         ),
                         //ADD WEIGHT BUTTON
                         InkWell(
                           borderRadius: BorderRadius.circular(50),
                           onTap: () {
-                            if (_formKey.currentState!.validate()) {
-                              if (weightController.text.indexOf('.') !=
-                                  weightController.text.lastIndexOf('.')) {
-                                Navigator.pop(context);
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: "String is not allowed".text.make(),
-                                  ),
-                                );
-                                Fluttertoast.showToast(
-                                    msg: "String is not allowed",
-                                    toastLength: Toast.LENGTH_LONG,
-                                    backgroundColor: Colors.red);
+                            if (weightController.text.indexOf('.') !=
+                                weightController.text.lastIndexOf('.')) {
+                              Navigator.pop(context);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: "String is not allowed".text.make(),
+                                ),
+                              );
+                              Fluttertoast.showToast(
+                                  msg: "String is not allowed",
+                                  toastLength: Toast.LENGTH_LONG,
+                                  backgroundColor: Colors.red);
+                              weightController.clear();
+                              weightValue = weightController.text;
+                            } else if (weightController.text.indexOf('.') ==
+                                weightController.text.lastIndexOf('.')) {
+                              addWeight(double.parse(double.parse(weightValue)
+                                  .toStringAsFixed(3)));
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: "Your weight is added.".text.make(),
+                                ),
+                              );
+
+                              setState(() {
                                 weightController.clear();
-                                weightValue = weightController.text;
-                              } else if (weightController.text.indexOf('.') ==
-                                  weightController.text.lastIndexOf('.')) {
-                                addWeight(double.parse(double.parse(weightValue)
-                                    .toStringAsFixed(3)));
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: "Your weight is added.".text.make(),
-                                  ),
-                                );
-
-                                setState(() {
-                                  weightController.clear();
-                                });
-                                Navigator.pop(context);
-                              }
-                              // try {
-                              //   double.parse(weightController.text);
-                              // } catch (e) {
-                              //   print("iweorkfasdfasdf");
-                              //   Navigator.pop(context);
-                              //   ScaffoldMessenger.of(context).showSnackBar(
-                              //       SnackBar(
-                              //           content:
-                              //               "String is not allowed".text.make()));
-                              //   Fluttertoast.showToast(
-                              //       msg: "String is not allowed",
-                              //       toastLength: Toast.LENGTH_LONG,
-                              //       backgroundColor: Colors.red);
-                              //   weightController.clear();
-                              //   weightValue = weightController.text;
-                              // }
-
+                              });
+                              Navigator.pop(context);
                             }
+                            // try {
+                            //   double.parse(weightController.text);
+                            // } catch (e) {
+                            //   print("iweorkfasdfasdf");
+                            //   Navigator.pop(context);
+                            //   ScaffoldMessenger.of(context).showSnackBar(
+                            //       SnackBar(
+                            //           content:
+                            //               "String is not allowed".text.make()));
+                            //   Fluttertoast.showToast(
+                            //       msg: "String is not allowed",
+                            //       toastLength: Toast.LENGTH_LONG,
+                            //       backgroundColor: Colors.red);
+                            //   weightController.clear();
+                            //   weightValue = weightController.text;
+                            // }
                           },
                           child: Container(
                             width: MediaQuery.of(context).size.width,
                             height: 55,
                             child: Center(
                               child: Text(
-                                "Add Weight",
+                                "Add Weight in (${settingsPageController.currentWeightValue.value})",
                                 style: Theme.of(context).textTheme.headline2,
                               ),
                             ),
@@ -733,7 +688,7 @@ class _HomePageState extends State<HomePage> {
                       },
                       child: Container(
                         height: 55,
-                        width: (MediaQuery.of(context).size.width / 100 ) * 72,
+                        width: (MediaQuery.of(context).size.width / 100) * 72,
                         child: Center(
                           child: Text(
                             "Cancel",
@@ -761,7 +716,7 @@ class _HomePageState extends State<HomePage> {
         "-" +
         value.substring(0, 4);
     WeightModel testWeight = WeightModel();
-    testWeight.weight = someValue;
+    testWeight.weight = double.parse((someValue * settingsPageController.currentWeightMultiplier.value).toStringAsFixed(2));
     print(DateFormat('EEEE').format(DateTime.now()));
     testWeight.day = DateFormat('EEEE').format(DateTime.now()).toString();
     testWeight.date = thisDate;
@@ -914,216 +869,21 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  //return data of weights
-  Widget returnLineChartOfWeights() {
-    //testing data for charts
-    List<Color> gradientColors = [
-      const Color(0xff23b6e6),
-      const Color(0xff02d39a),
-    ];
-    return Obx(
-      () => LineChart(
-        LineChartData(
-          gridData: FlGridData(
-            show: true,
-            drawVerticalLine: true,
-            horizontalInterval: 10,
-            verticalInterval: 1,
-            getDrawingHorizontalLine: (value) {
-              return FlLine(
-                color: const Color(0xff37434d),
-                strokeWidth: 1,
-              );
-            },
-            getDrawingVerticalLine: (value) {
-              return FlLine(
-                color: const Color(0xff37434d),
-                strokeWidth: 1,
-              );
-            },
-          ),
-          titlesData: FlTitlesData(
-            show: true,
-            rightTitles: AxisTitles(
-              sideTitles: SideTitles(showTitles: false),
-            ),
-            topTitles: AxisTitles(
-              sideTitles: SideTitles(showTitles: false),
-            ),
-            bottomTitles: AxisTitles(
-              sideTitles: SideTitles(
-                showTitles: true,
-                reservedSize: 20,
-                interval: 1,
-                getTitlesWidget: bottomTitleWidgets,
-              ),
-            ),
-            leftTitles: AxisTitles(
-              sideTitles: SideTitles(
-                showTitles: true,
-                interval: 1,
-                getTitlesWidget: leftTitleWidgets,
-                reservedSize: 28,
-              ),
-            ),
-          ),
-          borderData: FlBorderData(
-            show: true,
-            border: Border.all(
-              color: const Color(0xff37434d),
-              width: 1,
-            ),
-          ),
-          minX: 0,
-          minY: 0,
-          maxX: 31,
-          maxY: 200,
-          lineBarsData: [
-            LineChartBarData(
-              spots: List<FlSpot>.generate(
-                homePageController.dayAndWeightData.length,
-                (index) => FlSpot(
-                  double.parse(homePageController.dayAndWeightData[index].day!),
-                  homePageController.dayAndWeightData[index].weight!,
-                ),
-              ),
-              // const [
-              //   FlSpot(0, 3),
-              //   FlSpot(2.6, 2),
-              //   FlSpot(4.9, 5),
-              //   FlSpot(6.8, 3.1),
-              //   FlSpot(8, 4),
-              //   FlSpot(9.5, 3),
-              //   FlSpot(11, 4),
-              // ],
-              isCurved: true,
-              gradient: LinearGradient(
-                colors: gradientColors,
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-              ),
-              barWidth: 5,
-              isStrokeCapRound: true,
-              dotData: FlDotData(
-                show: false,
-              ),
-              belowBarData: BarAreaData(
-                show: true,
-                gradient: LinearGradient(
-                  colors: gradientColors
-                      .map((color) => color.withOpacity(0.3))
-                      .toList(),
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget bottomTitleWidgets(double value, TitleMeta meta) {
-    const style = TextStyle(
-      color: Color(0xff68737d),
-      fontWeight: FontWeight.bold,
-      fontSize: 11,
-    );
-    Widget text;
-    switch (value.toInt()) {
-      case 0:
-        text = const Text('MAR', style: style);
-        break;
-      case 3:
-        text = const Text('3', style: style);
-        break;
-      case 6:
-        text = const Text('6', style: style);
-        break;
-      case 9:
-        text = const Text('9', style: style);
-        break;
-      case 12:
-        text = const Text('12', style: style);
-        break;
-      case 15:
-        text = const Text('15', style: style);
-        break;
-      case 18:
-        text = const Text('18', style: style);
-        break;
-      case 21:
-        text = const Text('21', style: style);
-        break;
-      case 24:
-        text = const Text('24', style: style);
-        break;
-      case 27:
-        text = const Text('27', style: style);
-        break;
-      case 30:
-        text = const Text('30', style: style);
-        break;
-      default:
-        text = const Text('', style: style);
-        break;
+  String removeDotZeroFunction(String removeZeroParameter) {
+    if (removeZeroParameter.length > 1) {
+      if ((removeZeroParameter.substring(removeZeroParameter.length - 2))
+          .contains(".0")) {
+        removeZeroParameter =
+            removeZeroParameter.substring(0, removeZeroParameter.length - 2);
+      } else {
+        removeZeroParameter = removeZeroParameter;
+      }
     }
-
-    return Padding(child: text, padding: const EdgeInsets.only(top: 8.0));
-  }
-
-  Widget leftTitleWidgets(double value, TitleMeta meta) {
-    const style = TextStyle(
-      color: Color(0xff67727d),
-      fontWeight: FontWeight.bold,
-      fontSize: 11,
-    );
-    String text;
-    switch (value.toInt()) {
-      case 0:
-        text = 'KG';
-        break;
-      case 30:
-        text = '30';
-        break;
-      case 60:
-        text = '60';
-        break;
-      case 90:
-        text = '90';
-        break;
-      case 120:
-        text = '120';
-        break;
-      case 150:
-        text = '150';
-        break;
-      case 180:
-        text = '180';
-        break;
-      case 210:
-        text = '210';
-        break;
-      default:
-        return Container();
-    }
-
-    return Text(text, style: style, textAlign: TextAlign.left);
+    return removeZeroParameter;
   }
 
   // LineChartData mainData() {
 
   //   return
   // }
-}
-
-class dayAndWeightDataModel {
-  String? day;
-  double? weight;
-  dayAndWeightDataModel({this.day, this.weight});
-}
-
-class HomePageController extends GetxController {
-  List<dayAndWeightDataModel> dayAndWeightData = <dayAndWeightDataModel>[].obs;
 }

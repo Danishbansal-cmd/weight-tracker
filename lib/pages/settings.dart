@@ -188,8 +188,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                     Container(
                       margin: const EdgeInsets.only(top: 8),
-                      padding:
-                          EdgeInsets.symmetric(vertical: 3, horizontal: 3),
+                      padding: EdgeInsets.symmetric(vertical: 3, horizontal: 3),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(5),
                         color: Colors.grey.shade200,
@@ -260,6 +259,9 @@ class _SettingsPageState extends State<SettingsPage> {
               //
               //DISPLAY SETTINGS
               Container(
+                margin: const EdgeInsets.symmetric(
+                  vertical: 4,
+                ),
                 decoration: const BoxDecoration(
                   color: Colors.white,
                 ),
@@ -293,11 +295,11 @@ class _SettingsPageState extends State<SettingsPage> {
                         // ),
                         Container(
                           width: (MediaQuery.of(context).size.width) - 90,
-                          height: 75,
+                          height: 60,
                           decoration: const BoxDecoration(
                             image: DecorationImage(
                               image: AssetImage(
-                                'assets/display_settings_images/display_image1.png',
+                                'assets/display_settings_images/display_image1.jpg',
                               ),
                               fit: BoxFit.fill,
                             ),
@@ -369,7 +371,88 @@ class _SettingsPageState extends State<SettingsPage> {
 
               //
               //SECURITY SETTINGS
-              // Container(child: ,),
+              Container(
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                ),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    //
+                    //main heading
+                    const Text(
+                      "Security & passwords",
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    //
+                    //first security option row
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        bottom: 15.0,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('Firebase Security'),
+                          Container(
+                            height: 20,
+                            width: 34,
+                            child: Switch.adaptive(
+                              materialTapTargetSize:
+                                  MaterialTapTargetSize.shrinkWrap,
+                              value: false,
+                              onChanged: (value) {
+                                setState(() {
+                                  value = !value;
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    functionDivider(),
+                    //
+                    //second security option row
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        bottom: 15.0,
+                        top: 15.0,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('Systyem Security'),
+                          Container(
+                            height: 20,
+                            width: 34,
+                            child: Switch.adaptive(
+                              materialTapTargetSize:
+                                  MaterialTapTargetSize.shrinkWrap,
+                              value: false,
+                              onChanged: (value) {
+                                setState(() {
+                                  value = !value;
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    functionDivider(),
+                  ],
+                ),
+              ),
             ],
           ),
         ),

@@ -75,6 +75,23 @@ class MyDrawer extends StatelessWidget {
             InkWell(
               onTap: () {
                 Navigator.pop(context);
+                Get.toNamed('/analyticsPage');
+              },
+              child: const ListTile(
+                leading:
+                    Icon(CupertinoIcons.graph_circle_fill, color: Colors.white),
+                title: Text(
+                  "Analytics",
+                  textScaleFactor: 1.2,
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+            InkWell(
+              onTap: () {
+                Navigator.pop(context);
                 Get.toNamed('/settingsPage', arguments: {'email': email});
               },
               child: const ListTile(

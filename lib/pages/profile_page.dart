@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -23,14 +24,17 @@ class _ProfilePageState extends State<ProfilePage> {
   //
   //initializing controller
   final profilePageController = Get.put(ProfilePageController());
+  //userUid
+  String userUid = FirebaseAuth.instance.currentUser!.uid;
+  //firebase Storage reference
+  final ref = FirebaseStorage.instance.ref();
   //
   //init method
   @override
   void initState() {
     super.initState();
-    final firestoreInstance = FirebaseFirestore.instance
-        .collection("users")
-        .doc(FirebaseAuth.instance.currentUser!.uid);
+    final firestoreInstance =
+        FirebaseFirestore.instance.collection("users").doc(userUid);
     firestoreInstance
         .collection('moreinfo')
         .doc('aboutdata')
@@ -42,10 +46,35 @@ class _ProfilePageState extends State<ProfilePage> {
       nameController.text = value['firstName'] + ' ' + value['secondName'];
       phoneNumberController.text = value['phoneNumber'].toString();
     });
+    print('storage reference1');
+    // final a = _getString() as String;
+    print(_getString());
   }
 
-  File? pathOfImage;
-  File? pathOfImage2;
+  _getString() async {
+    print('storage reference');
+    var ref = await FirebaseStorage.instance
+        .ref()
+        .child("$userUid/profilePictures/")
+        .listAll();
+    ref.items.forEach((element) async {
+      // element.split('.');
+      if (element.name.split('.').first == 'background') {
+        profilePageController.setBackgroundImageUrlFromFirebaseStorage(
+            (await element.getDownloadURL()).toString());
+        // print('getBackgroundImageUrlFromFirebaseStorage $getBackgroundImageUrlFromFirebaseStorage');
+      }
+      if (element.name.split('.').first == 'profile') {
+        profilePageController.setProfileImageUrlFromFirebaseStorage(
+            (await element.getDownloadURL()).toString());
+        // print('getProfileImageUrlFromFirebaseStorage $getProfileImageUrlFromFirebaseStorage');
+      }
+    });
+    // return ref;
+  }
+
+  //variables
+
   final _formKey = GlobalKey<FormState>();
 
   TextEditingController nameController = TextEditingController();
@@ -63,8 +92,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    // nameController.text = Get.arguments['name'];
-    // phoneNumberController.text = Get.arguments['phoneNumber'];
     return Scaffold(
       // appBar: AppBar(
       //   title: const Text(
@@ -96,25 +123,41 @@ class _ProfilePageState extends State<ProfilePage> {
                       height: 380,
                     ),
                     //
-                    //show image container
-                    ClipRRect(
-                      borderRadius: const BorderRadius.only(
-                        bottomLeft: Radius.circular(13),
-                        bottomRight: Radius.circular(13),
+                    //show backgournd image container
+                    Obx(
+                      () => ClipRRect(
+                        borderRadius: const BorderRadius.only(
+                          bottomLeft: Radius.circular(13),
+                          bottomRight: Radius.circular(13),
+                        ),
+                        child: profilePageController
+                                    .getBackgroundImageUrlFromFirebaseStorage
+                                    .isNotEmpty &&
+                                profilePageController
+                                    .getUploadBackgroundImagePath.isEmpty
+                            ? Image.network(
+                                profilePageController
+                                    .getBackgroundImageUrlFromFirebaseStorage,
+                                width: MediaQuery.of(context).size.width,
+                                height: 300,
+                                fit: BoxFit.fill,
+                              )
+                            : (profilePageController
+                                    .getUploadBackgroundImagePath.isNotEmpty)
+                                ? Image.file(
+                                    File(profilePageController
+                                        .getUploadBackgroundImagePath),
+                                    width: MediaQuery.of(context).size.width,
+                                    height: 300,
+                                    fit: BoxFit.fill,
+                                  )
+                                : Image.network(
+                                    'https://firebasestorage.googleapis.com/v0/b/weighttracker-1234.appspot.com/o/ocean.png?alt=media&token=a3d8ed15-c6d9-4b55-afa4-a6cc4b3c2022',
+                                    width: MediaQuery.of(context).size.width,
+                                    height: 300,
+                                    fit: BoxFit.fill,
+                                  ),
                       ),
-                      child: (pathOfImage != null)
-                          ? Image.file(
-                              pathOfImage!,
-                              width: MediaQuery.of(context).size.width,
-                              height: 300,
-                              fit: BoxFit.fill,
-                            )
-                          : Image.asset(
-                              'assets/ocean.png',
-                              width: MediaQuery.of(context).size.width,
-                              height: 300,
-                              fit: BoxFit.fill,
-                            ),
                     ),
                     //
                     //show background image change button
@@ -149,21 +192,36 @@ class _ProfilePageState extends State<ProfilePage> {
                           Positioned(
                             top: 5,
                             left: 5,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(100),
-                              child: (pathOfImage2 != null)
-                                  ? Image.file(
-                                      pathOfImage2!,
-                                      width: 120,
-                                      height: 120,
-                                      fit: BoxFit.fill,
-                                    )
-                                  : Image.network(
-                                      'https://www.business2community.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640.png',
-                                      width: 120,
-                                      height: 120,
-                                      fit: BoxFit.fill,
-                                    ),
+                            child: Obx(
+                              () => ClipRRect(
+                                borderRadius: BorderRadius.circular(100),
+                                child: profilePageController
+                                            .getProfileImageUrlFromFirebaseStorage
+                                            .isNotEmpty &&
+                                        profilePageController
+                                            .getUploadProfileImagePath.isEmpty
+                                    ? Image.network(
+                                        profilePageController
+                                            .getProfileImageUrlFromFirebaseStorage,
+                                        fit: BoxFit.fill,
+                                      )
+                                    : (profilePageController
+                                            .getUploadProfileImagePath
+                                            .isNotEmpty)
+                                        ? Image.file(
+                                            File(profilePageController
+                                                .getUploadProfileImagePath),
+                                            width: 120,
+                                            height: 120,
+                                            fit: BoxFit.fill,
+                                          )
+                                        : Image.network(
+                                            'https://firebasestorage.googleapis.com/v0/b/weighttracker-1234.appspot.com/o/profile.png?alt=media&token=432b4bf2-f9a6-4e64-8273-3397f4467583',
+                                            width: 120,
+                                            height: 120,
+                                            fit: BoxFit.fill,
+                                          ),
+                              ),
                             ),
                           ),
                           //
@@ -214,17 +272,6 @@ class _ProfilePageState extends State<ProfilePage> {
                                 focusNode: emailNode,
                                 controller: nameController,
                                 decoration: decorationFormFields.copyWith(),
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    profilePageController.setNameErrorText(
-                                        'Name cannot be empty');
-                                  } else if (value.length < 7) {
-                                    profilePageController.setNameErrorText(
-                                        'Name must have 6 characters');
-                                  } else {
-                                    profilePageController.setNameErrorText('');
-                                  }
-                                },
                               ),
                             ),
                             //
@@ -347,20 +394,6 @@ class _ProfilePageState extends State<ProfilePage> {
                                         RegExp('[0-9]'))
                                   ],
                                   decoration: decorationFormFields.copyWith(),
-                                  validator: (value) {
-                                    if (value!.isEmpty) {
-                                      profilePageController
-                                          .setPhoneNumberErrorText(
-                                              'Phone Number cannot be empty');
-                                    } else if (value.length != 10) {
-                                      profilePageController
-                                          .setPhoneNumberErrorText(
-                                              'Phone Number must have 10 digits');
-                                    } else {
-                                      profilePageController
-                                          .setPhoneNumberErrorText('');
-                                    }
-                                  },
                                 ),
                               ),
                             ],
@@ -450,17 +483,6 @@ class _ProfilePageState extends State<ProfilePage> {
                             maxLines: null,
                             maxLength: 1000,
                             decoration: decorationFormFields.copyWith(),
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                profilePageController.setAboutErrorText(
-                                    'About field cannot be empty');
-                              } else if (value.length < 251) {
-                                profilePageController.setAboutErrorText(
-                                    'You have to write 250 characters about yourself');
-                              } else {
-                                profilePageController.setAboutErrorText('');
-                              }
-                            },
                           ),
                         ],
                       ),
@@ -502,7 +524,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         Future.delayed(
                           const Duration(milliseconds: 100),
                           () {
-                            if (_formKey.currentState!.validate()) {}
+                            updateMethodButton();
                           },
                         );
                       },
@@ -540,7 +562,7 @@ class _ProfilePageState extends State<ProfilePage> {
       _cropImage(image.path, type);
     }
     // setState(() {
-    //   pathOfImage = File(image!.path);
+    //   uploadBackgroundImage = File(image!.path);
     // });
     // _cropImage(image!.path);
   }
@@ -551,13 +573,24 @@ class _ProfilePageState extends State<ProfilePage> {
     final ImageCropper _cropper = ImageCropper();
     final croppedImage = await _cropper.cropImage(
         sourcePath: filepath,
+        compressQuality: 100,
+        aspectRatio: type == 'background'
+            ? CropAspectRatio(
+                ratioX: (MediaQuery.of(context).size.width / 300), ratioY: 1)
+            : CropAspectRatio(ratioX: 1, ratioY: 1),
         maxWidth: type == 'background' ? 1080 : 120,
         maxHeight: type == 'background' ? 700 : 120);
     if (croppedImage != null) {
       setState(() {
         type == 'background'
-            ? pathOfImage = File(croppedImage.path)
-            : pathOfImage2 = File(croppedImage.path);
+            ? profilePageController
+                .setUploadBackgroundImagePath(croppedImage.path)
+            : profilePageController
+                .setUploadProfileImagePath(croppedImage.path);
+        print(
+            'patho of image ${profilePageController.getUploadBackgroundImagePath}');
+        print(
+            'patho of image2 ${profilePageController.getUploadProfileImagePath}');
       });
     }
   }
@@ -631,13 +664,143 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
     );
   }
+
+  void updateMethodButton() async {
+    if (nameValidate() == true &&
+        phoneNumberValidate() == true &&
+        aboutValidate() == true) {
+          showDialog(
+            context: context,
+            builder: (context) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            },
+          );
+      final firestoreInstance =
+          FirebaseFirestore.instance.collection("users").doc(userUid);
+      //for updating or uploading background image
+      if (profilePageController.getUploadBackgroundImagePath.isNotEmpty) {
+        try {
+          
+          String path =
+              '$userUid/profilePictures/background.${profilePageController.getUploadBackgroundImagePath.split('.').last}';
+          ref.child(path).putFile(
+              File(profilePageController.getUploadBackgroundImagePath));
+          // Navigator.of(context).popUntil(ModalRoute.withName('/profilePage'));
+        } on FirebaseAuthException catch (e) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(e.message!),
+            ),
+          );
+          Get.back();
+        } catch (e) {
+          print(e);
+          Get.back();
+        }
+      }
+      //for updating or uploading profile image
+      if (profilePageController.getUploadProfileImagePath.isNotEmpty) {
+        try {
+          // showDialog(
+          //   context: context,
+          //   builder: (context) {
+          //     return const Center(
+          //       child: CircularProgressIndicator(),
+          //     );
+          //   },
+          // );
+          String path =
+              '$userUid/profilePictures/profile.${profilePageController.getUploadProfileImagePath.split('.').last}';
+          ref
+              .child(path)
+              .putFile(File(profilePageController.getUploadProfileImagePath));
+          // Navigator.of(context).popUntil(ModalRoute.withName('/profilePage'));
+        } on FirebaseAuthException catch (e) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(e.message!),
+            ),
+          );
+          Get.back();
+        } catch (e) {
+          print(e);
+          Get.back();
+        }
+      }
+      //for updating profile name
+      if (nameController.text.split(' ').length == 2) {
+        firestoreInstance
+            .update({'firstName': nameController.text.split(' ').first});
+        firestoreInstance
+            .update({'secondName': nameController.text.split(' ').last});
+      } else if (nameController.text.split(' ').length == 1) {
+        firestoreInstance.update({'firstName': nameController.text});
+        firestoreInstance.update({'secondName': ''});
+      }
+      //for updating profile phoneNumber
+      firestoreInstance
+          .update({'phoneNumber': int.parse(phoneNumberController.text)});
+      //for updating profile about text
+      firestoreInstance
+          .collection('moreinfo')
+          .doc('aboutdata')
+          .update({'about': aboutController.text});
+      Navigator.of(context).popUntil(ModalRoute.withName('/profilePage'));
+    }
+  }
+
+  bool nameValidate() {
+    if (nameController.text.isEmpty) {
+      profilePageController.setNameErrorText('Name cannot be empty');
+      return false;
+    } else if (nameController.text.length < 6) {
+      profilePageController.setNameErrorText('Name must have 6 characters');
+      return false;
+    } else {
+      profilePageController.setNameErrorText('');
+      return true;
+    }
+  }
+
+  bool phoneNumberValidate() {
+    if (phoneNumberController.text.isEmpty) {
+      profilePageController
+          .setPhoneNumberErrorText('Phone Number cannot be empty');
+      return false;
+    } else if (phoneNumberController.text.length != 10) {
+      profilePageController
+          .setPhoneNumberErrorText('Phone Number must have 10 digits');
+      return false;
+    } else {
+      profilePageController.setPhoneNumberErrorText('');
+      return true;
+    }
+  }
+
+  bool aboutValidate() {
+    if (aboutController.text.isEmpty) {
+      profilePageController.setAboutErrorText('About field cannot be empty');
+      return false;
+    } else if (aboutController.text.length < 251) {
+      profilePageController
+          .setAboutErrorText('You have to write 250 characters about yourself');
+      return false;
+    } else {
+      profilePageController.setAboutErrorText('');
+      return true;
+    }
+  }
 }
 
 class ProfilePageController extends GetxController {
+  //
+  //error variables
   RxString _nameErrorText = ''.obs;
   RxString _phoneNumberErrorText = ''.obs;
   RxString _aboutErrorText = ''.obs;
-
+  //error variables getters and setters
   setNameErrorText(String value) {
     _nameErrorText.value = value;
   }
@@ -660,5 +823,47 @@ class ProfilePageController extends GetxController {
 
   String get getAboutErrorText {
     return _aboutErrorText.value;
+  }
+
+  //
+  //imageUrl variables
+  RxString _backgroundImageUrlFromFirebaseStorage = ''.obs;
+  RxString _profileImageUrlFromFirebaseStorage = ''.obs;
+  ////imageUrl variables getters and setters
+  String get getBackgroundImageUrlFromFirebaseStorage {
+    return _backgroundImageUrlFromFirebaseStorage.value;
+  }
+
+  String get getProfileImageUrlFromFirebaseStorage {
+    return _profileImageUrlFromFirebaseStorage.value;
+  }
+
+  setBackgroundImageUrlFromFirebaseStorage(String value) {
+    _backgroundImageUrlFromFirebaseStorage.value = value;
+  }
+
+  setProfileImageUrlFromFirebaseStorage(String value) {
+    _profileImageUrlFromFirebaseStorage.value = value;
+  }
+
+  //
+  //uploadimageUrl variables
+  RxString _uploadBackgroundImagePath = ''.obs;
+  RxString _uploadProfileImagePath = ''.obs;
+  //uploadimageUrl variables getters and setters
+  String get getUploadBackgroundImagePath {
+    return _uploadBackgroundImagePath.value;
+  }
+
+  String get getUploadProfileImagePath {
+    return _uploadProfileImagePath.value;
+  }
+
+  setUploadBackgroundImagePath(String value) {
+    _uploadBackgroundImagePath.value = value;
+  }
+
+  setUploadProfileImagePath(String value) {
+    _uploadProfileImagePath.value = value;
   }
 }
