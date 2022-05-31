@@ -218,6 +218,7 @@ class _OnboardingPagesState extends State<OnboardingPages> {
                       const SizedBox(
                         height: 25,
                       ),
+                      //next button container
                       //container to give margins
                       Container(
                         margin: const EdgeInsets.symmetric(
@@ -225,7 +226,7 @@ class _OnboardingPagesState extends State<OnboardingPages> {
                         ).copyWith(bottom: 30),
                         child: Material(
                           borderRadius: BorderRadius.circular(13),
-                          color: const Color.fromARGB(199, 104, 58, 183),
+                          color: Color.fromARGB(255, 104, 58, 183),
                           child: InkWell(
                             borderRadius: BorderRadius.circular(13),
                             splashColor: MyThemes.splashColor1,

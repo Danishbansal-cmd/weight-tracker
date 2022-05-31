@@ -6,6 +6,7 @@ import 'package:try1_something/pages/analytics_page.dart';
 import 'package:try1_something/pages/body_mass_index.dart';
 import 'package:try1_something/pages/first_page.dart';
 import 'package:try1_something/pages/forgot_password_page.dart';
+import 'package:try1_something/pages/information_page.dart';
 import 'package:try1_something/pages/login_page.dart';
 import 'package:try1_something/pages/home_page.dart';
 import 'package:try1_something/pages/onboardingPages/onboarding_pages.dart';
@@ -61,16 +62,8 @@ class MyApp extends StatelessWidget {
               GetPage(name: '/profilePage', page: () => ProfilePage()),
               GetPage(name: '/forgotPasswordPage', page: () => ForgotPasswordPage()),
               GetPage(name: '/analyticsPage', page: () => AnalyticsPage()),
+              GetPage(name: '/informationPage', page: () => InformationPage()),
             ],
-
-            routes: {
-              // "/": (context) => const DecisionTree(),
-              // // "/": (context) => const FirstPage(),
-              // MyRoutes.loginPage: (context) => LoginPage(),
-              // MyRoutes.homePage: (context) => const HomePage(),
-              // MyRoutes.signupPage: (context) => const SignupPage(),
-              // MyRoutes.settingsPage: (context) => SettingsPage(),
-            },
           );
         },
       ),

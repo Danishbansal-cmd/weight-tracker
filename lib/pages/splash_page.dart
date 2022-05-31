@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -12,6 +13,7 @@ class SplashPage extends StatefulWidget {
 
 class _SplashPageState extends State<SplashPage> {
   User? user;
+  int checkFirstTimeUsingHeight = 0;
   @override
   void initState() {
     super.initState();
@@ -30,8 +32,7 @@ class _SplashPageState extends State<SplashPage> {
     print('this is the sharedprefrences data $data');
     Future.delayed(
       const Duration(milliseconds: 1800),
-      () => data == 0 ||
-              data == null
+      () => data == 0 || data == null
           ? Get.offNamed('/onboardingPages')
           : user == null
               ? Get.offNamed('/firstPage')

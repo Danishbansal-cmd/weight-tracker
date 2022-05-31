@@ -517,6 +517,7 @@ class _HomePageState extends State<HomePage> {
   actionButtonMethod() {
     showModalBottomSheet<void>(
         context: context,
+
         backgroundColor: Colors.transparent,
         builder: (BuildContext context) {
           final _colorScheme2 = Theme.of(context).colorScheme;
@@ -527,6 +528,7 @@ class _HomePageState extends State<HomePage> {
               topRight: Radius.circular(20),
             ),
             child: Container(
+              height: MediaQuery.of(context).size.height / 2,
               padding: const EdgeInsets.symmetric(vertical: 30),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -615,10 +617,10 @@ class _HomePageState extends State<HomePage> {
                                   content: "String is not allowed".text.make(),
                                 ),
                               );
-                              Fluttertoast.showToast(
-                                  msg: "String is not allowed",
-                                  toastLength: Toast.LENGTH_LONG,
-                                  backgroundColor: Colors.red);
+                              // Fluttertoast.showToast(
+                              //     msg: "String is not allowed",
+                              //     toastLength: Toast.LENGTH_LONG,
+                              //     backgroundColor: Colors.red);
                               weightController.clear();
                               weightValue = weightController.text;
                             } else if (weightController.text.indexOf('.') ==

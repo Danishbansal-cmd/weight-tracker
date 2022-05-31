@@ -123,38 +123,39 @@ class MyDrawer extends StatelessWidget {
             //     ),
             //   ),
             // ),
-            Container(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  InkWell(
-                    onTap: () {
-                      logout(context);
-                    },
-                    child: const ListTile(
-                      leading: Icon(CupertinoIcons.minus_circle,
-                          color: Colors.white),
-                      title: Text(
-                        "Logout",
-                        textScaleFactor: 1.2,
-                        style: TextStyle(
-                          color: Colors.white,
+            Expanded(
+              child: Container(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        logout(context);
+                      },
+                      child: const ListTile(
+                        leading: Icon(CupertinoIcons.minus_circle,
+                            color: Colors.white),
+                        title: Text(
+                          "Logout",
+                          textScaleFactor: 1.2,
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ).expand(),
+            ),
           ],
         ),
       ),
     );
   }
 
-  Future<void> logout(BuildContext context) async {
+  static Future<void> logout(BuildContext context) async {
     await FirebaseAuth.instance.signOut();
-    Navigator.of(context)
-        .pushReplacement(MaterialPageRoute(builder: (context) => LoginPage()));
+    Get.offAllNamed('/loginPage');
   }
 }

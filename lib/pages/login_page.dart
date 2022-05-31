@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -23,7 +24,7 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController passwordsController = TextEditingController();
   bool _passwordVisible = false;
 
-  //creating controller
+  //initializing getx controller
   final loginPageStateController = Get.put(LoginPageState());
 
   bool changeButton = false;
@@ -32,6 +33,8 @@ class _LoginPageState extends State<LoginPage> {
 
   FocusNode node1 = new FocusNode();
   FocusNode node2 = new FocusNode();
+
+  int checkFirstTimeUsingHeight = 0;
 
   // moveToHome(BuildContext context) async {
   //   signIn();
@@ -209,7 +212,9 @@ class _LoginPageState extends State<LoginPage> {
                                 horizontal: 8,
                                 vertical: 4,
                               ),
-                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(4),),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(4),
+                              ),
                               // color: Colors.green,
                               // width: (MediaQuery.of(context).size.width),
                               child: Text(
@@ -333,9 +338,19 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                 ),
+                FirebaseFirestore.instance
+                    .collection("users")
+                    .doc(FirebaseAuth.instance.currentUser!.uid)
+                    .collection('moreinfo')
+                    .doc('aboutdata')
+                    .get()
+                    .then(
+                        (value) => checkFirstTimeUsingHeight = value['height']),
+                checkFirstTimeUsingHeight == null ||
+                        checkFirstTimeUsingHeight == 0
+                    ? Get.offNamed('/informationPage')
+                    : Get.offNamed('/homePage'),
                 loginPageStateController.loginEmailValue.value = '',
-                Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => HomePage())),
               })
           .catchError((Object error) {
         print("cath error works");

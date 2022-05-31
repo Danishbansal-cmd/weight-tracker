@@ -6,7 +6,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:try1_something/functions/my_drawer.dart';
 import 'package:try1_something/models/user_model.dart';
+import 'package:try1_something/utils/themes.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -26,13 +28,11 @@ class _SettingsPageState extends State<SettingsPage> {
   UserModel loggedInUsers = UserModel();
 
   //
-  //initializing controller
+  //initializing getx controller
   final SettingsPageController settingsPageController =
       Get.put(SettingsPageController());
-  FocusNode phoneNumberNode = FocusNode();
-
+  //initializing enum value
   display_values display = display_values.value1;
-
   //BASIC UNIT IS KG
   final Map MassList = {
     "Tonne": ["Tonne", "t", 1000.0],
@@ -90,370 +90,581 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
           ),
         ),
-        body: Container(
-          color: Colors.grey.shade200,
-          //
-          //main column
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+        body: NotificationListener<OverscrollIndicatorNotification>(
+          onNotification: (OverscrollIndicatorNotification overscroll) {
+            overscroll.disallowIndicator();
+            return false;
+          },
+          child: SingleChildScrollView(
+            child: Container(
+              color: Colors.grey.shade200,
               //
-              //first three details
-              //about the user
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 4,
-                ),
-                child: Column(
-                  children: [
-                    //
-                    //email container
-                    Container(
-                      color: Colors.white,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 15,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text("E-mail address"),
-                          Obx(() => Text(
-                              "${settingsPageController.emailValue.value}")),
-                        ],
-                      ),
+              //main column
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  //
+                  //first three details
+                  //about the user
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 4,
                     ),
-                    functionDivider(),
-                    //
-                    //phone number container
-                    Container(
-                      color: Colors.white,
-                      padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            child: Center(child: Text("Phone number")),
+                    child: Column(
+                      children: [
+                        //
+                        //email container
+                        Container(
+                          color: Colors.white,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 15,
                           ),
-                          Obx(
-                            () => Container(
-                              height: 47,
-                              // width: 100,
-                              child: Center(
-                                  child: Text(
-                                settingsPageController.phoneNumberValue.value,
-                              )),
-                            ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text("E-mail address"),
+                              Obx(() => Text(
+                                  "${settingsPageController.emailValue.value}")),
+                            ],
                           ),
-                        ],
-                      ),
-                    ),
-                    functionDivider(),
-                    //
-                    //Full Name container
-                    Container(
-                      color: Colors.white,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 15,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text("Full Name"),
-                          Obx(() => Text(
-                              "${settingsPageController.firstNameValue.value} ${settingsPageController.secondNameValue.value}")),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              //
-              // LANGUAGE SETTINGS
-              Container(
-                color: Colors.white,
-                padding:
-                    const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      "Language settings",
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(top: 8),
-                      padding: EdgeInsets.symmetric(vertical: 3, horizontal: 3),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        color: Colors.grey.shade200,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          toggleButton(context, "English"),
-                          toggleButton(context, "German"),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              //
-              //UNIT SETTINGS
-              Container(
-                color: Colors.white,
-                margin: const EdgeInsets.only(
-                  top: 4,
-                  bottom: 4,
-                ),
-                padding:
-                    const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      "Weigh your weight in",
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Obx(
-                      () => InkWell(
-                        onTap: () {
-                          showModalBottomSheet(
-                            // isDismissible: false,
-                            // enableDrag: false,
-                            isScrollControlled: true,
-                            backgroundColor: Colors.transparent,
-                            context: context,
-                            builder: (BuildContext context) =>
-                                chooseWeightUnit(context),
-                          );
-                        },
-                        child: Row(
-                          children: [
-                            Text(
-                                '${settingsPageController.currentWeightSymbol.value}'),
-                            const Padding(
-                              padding: EdgeInsets.only(top: 6),
-                              child: Icon(
-                                CupertinoIcons.arrow_down,
-                                size: 12,
-                              ),
-                            ),
-                          ],
                         ),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-              //
-              //DISPLAY SETTINGS
-              Container(
-                margin: const EdgeInsets.symmetric(
-                  vertical: 4,
-                ),
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                ),
-                padding:
-                    const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    //
-                    //main heading
-                    const Text(
-                      "Display settings",
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
+                        functionDivider(),
+                        //
+                        //phone number container
+                        Container(
+                          color: Colors.white,
+                          padding: EdgeInsets.symmetric(horizontal: 20),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                child: Center(child: Text("Phone number")),
+                              ),
+                              Obx(
+                                () => Container(
+                                  height: 47,
+                                  // width: 100,
+                                  child: Center(
+                                      child: Text(
+                                    settingsPageController
+                                        .phoneNumberValue.value,
+                                  )),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        functionDivider(),
+                        //
+                        //Full Name container
+                        Container(
+                          color: Colors.white,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 15,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text("Full Name"),
+                              Obx(() => Text(
+                                  "${settingsPageController.firstNameValue.value} ${settingsPageController.secondNameValue.value}")),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(
-                      height: 8,
+                  ),
+                  //
+                  // LANGUAGE SETTINGS
+                  Container(
+                    color: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 20, horizontal: 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "Language settings",
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(top: 8),
+                          padding:
+                              EdgeInsets.symmetric(vertical: 3, horizontal: 3),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            color: Colors.grey.shade200,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              toggleButton(context, "English"),
+                              toggleButton(context, "German"),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                    //
-                    //first display row
-                    Row(
+                  ),
+                  //
+                  //UNIT SETTINGS
+                  Container(
+                    color: Colors.white,
+                    margin: const EdgeInsets.only(
+                      top: 4,
+                      bottom: 4,
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 20, horizontal: 20),
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        // Image.asset(
-                        //   'assets/display_settings_images/display_image1.png',
-                        //   height: 84,
-                        //   width: (MediaQuery.of(context).size.width) - 80,
-                        // ),
-                        Container(
-                          width: (MediaQuery.of(context).size.width) - 90,
-                          height: 60,
-                          decoration: const BoxDecoration(
-                            image: DecorationImage(
-                              image: AssetImage(
-                                'assets/display_settings_images/display_image1.jpg',
-                              ),
-                              fit: BoxFit.fill,
-                            ),
+                        const Text(
+                          "Weigh your weight in",
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                        Container(
-                          // color: Colors.red,
-                          child: Radio(
-                            value: display_values.value1,
-                            groupValue: display,
-                            onChanged: (obj) {
-                              setState(() {
-                                display = display_values.value1;
-                              });
+                        Obx(
+                          () => InkWell(
+                            onTap: () {
+                              showModalBottomSheet(
+                                // isDismissible: false,
+                                // enableDrag: false,
+                                isScrollControlled: true,
+                                backgroundColor: Colors.transparent,
+                                context: context,
+                                builder: (BuildContext context) =>
+                                    chooseWeightUnit(context),
+                              );
                             },
+                            child: Row(
+                              children: [
+                                Text(
+                                    '${settingsPageController.currentWeightSymbol.value}'),
+                                const Padding(
+                                  padding: EdgeInsets.only(top: 6),
+                                  child: Icon(
+                                    CupertinoIcons.arrow_down,
+                                    size: 12,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         )
                       ],
                     ),
-
-                    //
-                    //second display row
-                    Row(
+                  ),
+                  //
+                  //DISPLAY SETTINGS
+                  Container(
+                    margin: const EdgeInsets.symmetric(
+                      vertical: 4.0,
+                    ).copyWith(top: 0.0),
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 20, horizontal: 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          width: (MediaQuery.of(context).size.width) - 90,
-                          height: 75,
-                          child: ListTile(
-                            contentPadding: EdgeInsets.zero,
-                            leading: Container(
-                              height: 56,
-                              width: 56,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(120),
-                                color: Colors.deepPurple,
-                              ),
-                              child: Center(
-                                child: Text(
-                                  '59.00 kg',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.white,
+                        //
+                        //main heading
+                        const Text(
+                          "Display settings",
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        //
+                        //first display row
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            // Image.asset(
+                            //   'assets/display_settings_images/display_image1.png',
+                            //   height: 84,
+                            //   width: (MediaQuery.of(context).size.width) - 80,
+                            // ),
+                            Container(
+                              width: (MediaQuery.of(context).size.width) - 90,
+                              height: 60,
+                              decoration: const BoxDecoration(
+                                image: DecorationImage(
+                                  image: AssetImage(
+                                    'assets/display_settings_images/display_image1.jpg',
                                   ),
+                                  fit: BoxFit.fill,
                                 ),
                               ),
                             ),
-                            title: Text('18-05-2022'),
-                            subtitle: Text('13:20:48'),
-                            trailing: Text('WED'),
-                          ),
+                            Container(
+                              // color: Colors.red,
+                              child: Radio(
+                                value: display_values.value1,
+                                groupValue: display,
+                                onChanged: (obj) {
+                                  setState(() {
+                                    display = display_values.value1;
+                                  });
+                                },
+                              ),
+                            )
+                          ],
                         ),
-                        Container(
-                          // color: Colors.red,
-                          child: Radio(
-                            value: display_values.value2,
-                            groupValue: display,
-                            onChanged: (obj) {
-                              setState(() {
-                                display = display_values.value2;
-                              });
-                            },
-                          ),
-                        )
+
+                        //
+                        //second display row
+                        Row(
+                          children: [
+                            Container(
+                              width: (MediaQuery.of(context).size.width) - 90,
+                              height: 75,
+                              child: ListTile(
+                                contentPadding: EdgeInsets.zero,
+                                leading: Container(
+                                  height: 56,
+                                  width: 56,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(120),
+                                    color: Colors.deepPurple,
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      '59.00 kg',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                title: Text('18-05-2022'),
+                                subtitle: Text('13:20:48'),
+                                trailing: Text('WED'),
+                              ),
+                            ),
+                            Container(
+                              // color: Colors.red,
+                              child: Radio(
+                                value: display_values.value2,
+                                groupValue: display,
+                                onChanged: (obj) {
+                                  setState(() {
+                                    display = display_values.value2;
+                                  });
+                                },
+                              ),
+                            )
+                          ],
+                        ),
                       ],
                     ),
-                  ],
-                ),
-              ),
+                  ),
 
-              //
-              //SECURITY SETTINGS
-              Container(
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                ),
-                padding:
-                    const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    //
-                    //main heading
-                    const Text(
-                      "Security & passwords",
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
+                  //
+                  //SECURITY SETTINGS
+                  Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
                     ),
-                    const SizedBox(
-                      height: 8,
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 20,
+                      horizontal: 20,
                     ),
-                    //
-                    //first security option row
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        bottom: 15.0,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('Firebase Security'),
-                          Container(
-                            height: 20,
-                            width: 34,
-                            child: Switch.adaptive(
-                              materialTapTargetSize:
-                                  MaterialTapTargetSize.shrinkWrap,
-                              value: false,
-                              onChanged: (value) {
-                                setState(() {
-                                  value = !value;
-                                });
-                              },
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        //
+                        //main heading
+                        const Text(
+                          "Security & passwords",
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        //
+                        //first security option row
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            bottom: 15.0,
+                            top: 15.0,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text('Firebase Security'),
+                              Obx(
+                                () => SizedBox(
+                                  height: 20,
+                                  width: 34,
+                                  child: Switch.adaptive(
+                                    materialTapTargetSize:
+                                        MaterialTapTargetSize.shrinkWrap,
+                                    value: settingsPageController
+                                        .getFirebaseSecuityValue,
+                                    onChanged: (value) {
+                                      settingsPageController
+                                          .setFirebaseSecuityValue(
+                                              !settingsPageController
+                                                  .getFirebaseSecuityValue);
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        // functionDivider(),
+                        //
+                        //second security option row
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            bottom: 15.0,
+                            top: 15.0,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text('System Security'),
+                              Obx(
+                                () => SizedBox(
+                                  height: 20,
+                                  width: 34,
+                                  child: Switch.adaptive(
+                                    materialTapTargetSize:
+                                        MaterialTapTargetSize.shrinkWrap,
+                                    value: settingsPageController
+                                        .getSystemSecuityValue,
+                                    onChanged: (value) {
+                                      settingsPageController
+                                          .setSystemSecuityValue(
+                                              !settingsPageController
+                                                  .getSystemSecuityValue);
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        // functionDivider(),
+                        //
+                        //first security option row
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            bottom: 15.0,
+                            top: 15.0,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text('Add App Lock'),
+                              Obx(
+                                () => SizedBox(
+                                  height: 20,
+                                  width: 34,
+                                  child: Switch.adaptive(
+                                    materialTapTargetSize:
+                                        MaterialTapTargetSize.shrinkWrap,
+                                    value:
+                                        settingsPageController.getAppLockValue,
+                                    onChanged: (value) {
+                                      settingsPageController.setAppLockValue(
+                                          !settingsPageController
+                                              .getAppLockValue);
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        // functionDivider(),
+                      ],
+                    ),
+                  ),
+
+                  //
+                  //ABOUT SETTINGS
+                  Container(
+                    margin: const EdgeInsets.symmetric(
+                      vertical: 4,
+                    ).copyWith(bottom: 0.0),
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 20,
+                    ).copyWith(bottom: 5.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        //
+                        //main heading
+                        const Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 20,
+                          ),
+                          child: Text(
+                            "About",
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                    functionDivider(),
-                    //
-                    //second security option row
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        bottom: 15.0,
-                        top: 15.0,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('Systyem Security'),
-                          Container(
-                            height: 20,
-                            width: 34,
-                            child: Switch.adaptive(
-                              materialTapTargetSize:
-                                  MaterialTapTargetSize.shrinkWrap,
-                              value: false,
-                              onChanged: (value) {
-                                setState(() {
-                                  value = !value;
-                                });
-                              },
+                        ),
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () {},
+                            highlightColor: Colors.transparent,
+                            splashColor: Color.fromARGB(255, 104, 58, 183),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20.0,
+                                vertical: 15.0,
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: const [
+                                  Text('Terms & Conditions'),
+                                  Icon(Icons.keyboard_arrow_right_sharp),
+                                ],
+                              ),
                             ),
                           ),
-                        ],
+                        ),
+                        Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () {},
+                            highlightColor: Colors.transparent,
+                            splashColor: Color.fromARGB(255, 104, 58, 183),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20.0,
+                                vertical: 15.0,
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: const [
+                                  Text('About Us'),
+                                  Icon(Icons.keyboard_arrow_right_sharp),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () {},
+                            highlightColor: Colors.transparent,
+                            splashColor: Color.fromARGB(255, 104, 58, 183),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20.0,
+                                vertical: 15.0,
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: const [
+                                  Text('Privacy Policy'),
+                                  Icon(Icons.keyboard_arrow_right_sharp),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () {},
+                            highlightColor: Colors.transparent,
+                            splashColor: Color.fromARGB(255, 104, 58, 183),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20.0,
+                                vertical: 15.0,
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: const [
+                                  Text('Contact Us'),
+                                  Icon(Icons.keyboard_arrow_right_sharp),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  //
+                  //LOGOUT SETTINGS
+                  Container(
+                    margin: const EdgeInsets.symmetric(vertical: 15.0,),
+                    child: Material(
+                      color: Theme.of(context).primaryColor,
+                      child: InkWell(
+                        splashColor: MyThemes.splashColor1,
+                        highlightColor: Colors.transparent,
+                        onTap: () {
+                          Future.delayed(
+                            const Duration(milliseconds: 100),
+                            () {
+                              MyDrawer.logout(context);
+                            },
+                          );
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(),
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 15.0,
+                          ),
+                          child: Center(
+                            child: Text(
+                              'LOGOUT',
+                              style: Theme.of(context).textTheme.headline2,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
-                    functionDivider(),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),
@@ -626,4 +837,32 @@ class SettingsPageController extends GetxController {
   RxString emailValue = ''.obs;
   RxString firstNameValue = ''.obs;
   RxString secondNameValue = ''.obs;
+  //initializing bool values
+  RxBool _firebaseSecuity = false.obs;
+  RxBool _systemSecuity = false.obs;
+  RxBool _appLock = false.obs;
+  //bool values getters and setters
+  bool get getFirebaseSecuityValue {
+    return _firebaseSecuity.value;
+  }
+
+  bool get getSystemSecuityValue {
+    return _systemSecuity.value;
+  }
+
+  bool get getAppLockValue {
+    return _appLock.value;
+  }
+
+  setFirebaseSecuityValue(bool value) {
+    _firebaseSecuity.value = value;
+  }
+
+  setSystemSecuityValue(bool value) {
+    _systemSecuity.value = value;
+  }
+
+  setAppLockValue(bool value) {
+    _appLock.value = value;
+  }
 }
