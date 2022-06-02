@@ -2,10 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:try1_something/pages/home_page.dart';
 import 'package:try1_something/pages/signup_page.dart';
 import 'package:try1_something/utils/themes.dart';
-// import 'package:velocity_x/velocity_x.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
@@ -321,7 +321,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   //sign in function
-  void signIn(String emails, String passwords) async {
+  Future<void> signIn(String emails, String passwords) async {
     print("begin to work");
     if (_formKey.currentState!.validate()) {
       setState(() {
@@ -329,32 +329,42 @@ class _LoginPageState extends State<LoginPage> {
       });
       await _auth
           .signInWithEmailAndPassword(email: emails, password: passwords)
-          .then((uid) => {
-                changeButton = true,
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text(
-                      "Signed in successfully",
+          .then(
+              (uid) => {
+                    changeButton = true,
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          "Signed in successfully",
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-                FirebaseFirestore.instance
-                    .collection("users")
-                    .doc(FirebaseAuth.instance.currentUser!.uid)
-                    .collection('moreinfo')
-                    .doc('aboutdata')
-                    .get()
-                    .then(
-                        (value) => checkFirstTimeUsingHeight = value['height']),
-                checkFirstTimeUsingHeight == null ||
-                        checkFirstTimeUsingHeight == 0
-                    ? Get.offNamed('/informationPage')
-                    : Get.offNamed('/homePage'),
-                loginPageStateController.loginEmailValue.value = '',
-              })
-          .catchError((Object error) {
+                    FirebaseFirestore.instance
+                        .collection("users")
+                        .doc(FirebaseAuth.instance.currentUser!.uid)
+                        .collection('moreinfo')
+                        .doc('aboutdata')
+                        .get()
+                        .then((value) {
+                      loginPageStateController.testing = value['height'];
+                    }),
+                    // print('statement ${checkFirstTimeUsingHeight}'),
+                    loginPageStateController.testing.value == null ||
+                            loginPageStateController.testing.value == 0
+                        ? Get.offNamed('/informationPage')
+                        : Get.offNamed('/homePage'),
+                    loginPageStateController.loginEmailValue.value = '',
+                  }, onError: (e) {
+        print('this is the error e $e');
+      }).catchError((Object error) {
         print("cath error works");
-        Fluttertoast.showToast(msg: "Wrong username or password");
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              "Wrong username or password",
+            ),
+          ),
+        );
         setState(() {
           changeButton = false;
         });
@@ -364,5 +374,6 @@ class _LoginPageState extends State<LoginPage> {
 }
 
 class LoginPageState extends GetxController {
-  RxString loginEmailValue = ''.obs;
+  RxString loginEmailValue = ''.obs; 
+  RxInt testing = 0.obs;
 }

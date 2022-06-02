@@ -39,10 +39,11 @@ class _HomePageState extends State<HomePage> {
   // List<dayAndWeightDataModel> dayAndWeightData = [];
 
   //
-  //initializing controller
-  // final homePageController = Get.put(HomePageController());
+
   final SettingsPageController settingsPageController =
       Get.put(SettingsPageController());
+  //initializing homepage getx controller
+  final homePageController = Get.put(HomePageController());
 
   String? unit;
 
@@ -121,6 +122,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    //
     setState(() {});
     final _colorScheme = Theme.of(context).colorScheme;
     final _textScheme = Theme.of(context).textTheme;
@@ -300,8 +302,8 @@ class _HomePageState extends State<HomePage> {
                                   "-" +
                                   item.id.substring(0, 4);
                               var removeZero;
-                              removeZero = removeDotZeroFunction(item['weight']
-                                    .toString());
+                              removeZero = removeDotZeroFunction(
+                                  item['weight'].toString());
                               return Dismissible(
                                 key: UniqueKey(),
                                 background: Container(
@@ -517,7 +519,6 @@ class _HomePageState extends State<HomePage> {
   actionButtonMethod() {
     showModalBottomSheet<void>(
         context: context,
-
         backgroundColor: Colors.transparent,
         builder: (BuildContext context) {
           final _colorScheme2 = Theme.of(context).colorScheme;
@@ -625,14 +626,14 @@ class _HomePageState extends State<HomePage> {
                               weightValue = weightController.text;
                             } else if (weightController.text.indexOf('.') ==
                                 weightController.text.lastIndexOf('.')) {
-                              addWeight(double.parse(double.parse(weightValue)
-                                  .toStringAsFixed(3)));
+                              homePageController.addWeight(double.parse(
+                                  double.parse(weightValue)
+                                      .toStringAsFixed(3)));
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: "Your weight is added.".text.make(),
                                 ),
                               );
-
                               setState(() {
                                 weightController.clear();
                               });
@@ -710,27 +711,6 @@ class _HomePageState extends State<HomePage> {
         });
   }
 
-  addWeight(double someValue) {
-    String value = DateTime.now().toString();
-    String thisDate = value.substring(8, 10) +
-        "-" +
-        value.substring(5, 7) +
-        "-" +
-        value.substring(0, 4);
-    WeightModel testWeight = WeightModel();
-    testWeight.weight = double.parse((someValue * settingsPageController.currentWeightMultiplier.value).toStringAsFixed(2));
-    print(DateFormat('EEEE').format(DateTime.now()));
-    testWeight.day = DateFormat('EEEE').format(DateTime.now()).toString();
-    testWeight.date = thisDate;
-    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
-    final _auth = FirebaseAuth.instance.currentUser;
-    firebaseFirestore
-        .collection("users")
-        .doc(_auth!.uid)
-        .collection("weights")
-        .doc(value)
-        .set(testWeight.weightToMap());
-  }
   // getDataFromServer() async {
   //   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
   //   final _auth = FirebaseAuth.instance.currentUser;
@@ -883,9 +863,34 @@ class _HomePageState extends State<HomePage> {
     }
     return removeZeroParameter;
   }
+}
 
-  // LineChartData mainData() {
+class HomePageController extends GetxController {
+  // final homePageController = Get.put(HomePageController());
+  final SettingsPageController settingsPageController =
+      Get.put(SettingsPageController());
 
-  //   return
-  // }
+  addWeight(double someValue) {
+    String value = DateTime.now().toString();
+    String thisDate = value.substring(8, 10) +
+        "-" +
+        value.substring(5, 7) +
+        "-" +
+        value.substring(0, 4);
+    WeightModel testWeight = WeightModel();
+    testWeight.weight = double.parse(
+        (someValue * settingsPageController.currentWeightMultiplier.value)
+            .toStringAsFixed(2));
+    print(DateFormat('EEEE').format(DateTime.now()));
+    testWeight.day = DateFormat('EEEE').format(DateTime.now()).toString();
+    testWeight.date = thisDate;
+    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+    final _auth = FirebaseAuth.instance.currentUser;
+    firebaseFirestore
+        .collection("users")
+        .doc(_auth!.uid)
+        .collection("weights")
+        .doc(value)
+        .set(testWeight.weightToMap());
+  }
 }

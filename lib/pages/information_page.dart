@@ -1,6 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:numberpicker/numberpicker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:try1_something/pages/home_page.dart';
 
 class InformationPage extends StatefulWidget {
   InformationPage({Key? key}) : super(key: key);
@@ -26,12 +30,14 @@ class _InformationPageState extends State<InformationPage> {
 
   @override
   void dispose() {
-    _controller!.dispose();
+    // _controller!.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    //initializing homepage getx controller
+    final homePageController = Get.put(HomePageController());
     return Scaffold(
       body: SafeArea(
         child: Container(
@@ -128,8 +134,32 @@ class _InformationPageState extends State<InformationPage> {
                               ],
                             )
                           : Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text('this is second page'),
+                                Text(
+                                  'Your Body Mass Index is',
+                                  style: Theme.of(context).textTheme.headline4,
+                                ),
+                                const SizedBox(
+                                  height: 8,
+                                ),
+                                Text(
+                                  ((informationPageController.getWeightValue *
+                                              0.453592) /
+                                          ((informationPageController
+                                                      .getHeightValue /
+                                                  100) *
+                                              (informationPageController
+                                                      .getHeightValue /
+                                                  100)))
+                                      .toStringAsFixed(1),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline3!
+                                      .copyWith(
+                                        color: Theme.of(context).primaryColor,
+                                      ),
+                                ),
                               ],
                             );
                     },
@@ -161,6 +191,18 @@ class _InformationPageState extends State<InformationPage> {
                                 });
                               }
                               if (_currentIndex == 1) {
+                                FirebaseFirestore.instance
+                                    .collection("users")
+                                    .doc(FirebaseAuth.instance.currentUser!.uid)
+                                    .collection('moreinfo')
+                                    .doc('aboutdata')
+                                    .update({
+                                  'height':
+                                      informationPageController.getHeightValue,
+                                });
+                                homePageController.addWeight(
+                                    (informationPageController.getWeightValue)
+                                        .toDouble());
                                 Get.offAllNamed('/homePage');
                               }
                             },
