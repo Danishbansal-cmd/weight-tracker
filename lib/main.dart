@@ -19,6 +19,7 @@ import 'package:try1_something/utils/themes.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:get/get.dart';
+import 'package:device_preview/device_preview.dart';
 
 // import 'package:flutter/services.dart';
 int? initScreen;
@@ -34,10 +35,16 @@ Future<void> main() async {
   data = await preferences.getInt('initOnboardScreen');
 
   // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual);
-  runApp(MyApp());
+  runApp(
+    DevicePreview(
+      enabled: true,
+      tools: [
+        ...DevicePreview.defaultTools
+      ],
+      builder: (context) => MyApp(), // Wrap your app
+    ),
+  );
 }
-
-
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -60,10 +67,10 @@ class MyApp extends StatelessWidget {
             themeMode: appsThemeManager.themeMode,
             darkTheme: MyThemes.darkTheme,
             initialRoute: data == 0 || data == null
-          ? '/onboardingPages'
-          : user == null
-              ? '/firstPage'
-              : '/homePage',
+                ? '/onboardingPages'
+                : user == null
+                    ? '/firstPage'
+                    : '/homePage',
             getPages: [
               GetPage(
                   name: '/onboardingPages',
