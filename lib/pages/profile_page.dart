@@ -1,6 +1,7 @@
 import 'dart:ffi';
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -135,12 +136,22 @@ class _ProfilePageState extends State<ProfilePage> {
                                     .isNotEmpty &&
                                 profilePageController
                                     .getUploadBackgroundImagePath.isEmpty
-                            ? Image.network(
-                                profilePageController
-                                    .getBackgroundImageUrlFromFirebaseStorage,
+                            ? CachedNetworkImage(
                                 width: MediaQuery.of(context).size.width,
                                 height: 300,
                                 fit: BoxFit.fill,
+                                imageUrl: profilePageController
+                                    .getBackgroundImageUrlFromFirebaseStorage,
+                                progressIndicatorBuilder:
+                                    (context, url, downloadProgress) =>
+                                        CircularProgressIndicator(
+                                            value: downloadProgress.progress),
+                                errorWidget: (context, url, error) =>
+                                    const Icon(
+                                  Icons.error,
+                                  size: 100,
+                                  color: Colors.red,
+                                ),
                               )
                             : (profilePageController
                                     .getUploadBackgroundImagePath.isNotEmpty)
@@ -200,10 +211,21 @@ class _ProfilePageState extends State<ProfilePage> {
                                             .isNotEmpty &&
                                         profilePageController
                                             .getUploadProfileImagePath.isEmpty
-                                    ? Image.network(
-                                        profilePageController
-                                            .getProfileImageUrlFromFirebaseStorage,
+                                    ? CachedNetworkImage(
                                         fit: BoxFit.fill,
+                                        imageUrl: profilePageController
+                                            .getProfileImageUrlFromFirebaseStorage,
+                                        progressIndicatorBuilder: (context, url,
+                                                downloadProgress) =>
+                                            CircularProgressIndicator(
+                                                value:
+                                                    downloadProgress.progress),
+                                        errorWidget: (context, url, error) =>
+                                            const Icon(
+                                          Icons.error,
+                                          size: 100,
+                                          color: Colors.red,
+                                        ),
                                       )
                                     : (profilePageController
                                             .getUploadProfileImagePath
@@ -669,20 +691,19 @@ class _ProfilePageState extends State<ProfilePage> {
     if (nameValidate() == true &&
         phoneNumberValidate() == true &&
         aboutValidate() == true) {
-          showDialog(
-            context: context,
-            builder: (context) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            },
+      showDialog(
+        context: context,
+        builder: (context) {
+          return const Center(
+            child: CircularProgressIndicator(),
           );
+        },
+      );
       final firestoreInstance =
           FirebaseFirestore.instance.collection("users").doc(userUid);
       //for updating or uploading background image
       if (profilePageController.getUploadBackgroundImagePath.isNotEmpty) {
         try {
-          
           String path =
               '$userUid/profilePictures/background.${profilePageController.getUploadBackgroundImagePath.split('.').last}';
           ref.child(path).putFile(
