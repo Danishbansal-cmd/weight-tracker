@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,21 +14,30 @@ import 'package:try1_something/pages/onboardingPages/onboarding_pages.dart';
 import 'package:try1_something/pages/profile_page.dart';
 import 'package:try1_something/pages/settings.dart';
 import 'package:try1_something/pages/signup_page.dart';
-import 'package:try1_something/pages/splash_page.dart';
 import 'package:try1_something/routes/routes.dart';
 import 'package:try1_something/utils/themes.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:get/get.dart';
+
 // import 'package:flutter/services.dart';
 int? initScreen;
+// ignore: prefer_typing_uninitialized_variables
+var data;
+// ignore: prefer_typing_uninitialized_variables
+var user;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  
+  user = await FirebaseAuth.instance.currentUser;
+  SharedPreferences preferences = await SharedPreferences.getInstance();
+  data = await preferences.getInt('initOnboardScreen');
+
   // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual);
   runApp(MyApp());
 }
+
+
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -49,18 +59,27 @@ class MyApp extends StatelessWidget {
             theme: MyThemes.lightTheme,
             themeMode: appsThemeManager.themeMode,
             darkTheme: MyThemes.darkTheme,
-            initialRoute: "/splashPage",
+            initialRoute: data == 0 || data == null
+          ? '/onboardingPages'
+          : user == null
+              ? '/firstPage'
+              : '/homePage',
             getPages: [
-              GetPage(name: '/splashPage', page: () => const SplashPage()),
-              GetPage(name: '/onboardingPages', page: () => const OnboardingPages()),
+              GetPage(
+                  name: '/onboardingPages',
+                  page: () => const OnboardingPages()),
               GetPage(name: '/firstPage', page: () => const FirstPage()),
-              GetPage(name: '/loginPage', page: () =>LoginPage()),
-              GetPage(name: '/signupPage', page: () =>const SignupPage()),
-              GetPage(name: '/homePage', page: () =>const HomePage()),
+              GetPage(name: '/loginPage', page: () => LoginPage()),
+              GetPage(name: '/signupPage', page: () => const SignupPage()),
+              GetPage(name: '/homePage', page: () => const HomePage()),
               GetPage(name: '/settingsPage', page: () => SettingsPage()),
-              GetPage(name: '/bodyMassIndexPage', page: () => const BodyMassIndexPage()),
+              GetPage(
+                  name: '/bodyMassIndexPage',
+                  page: () => const BodyMassIndexPage()),
               GetPage(name: '/profilePage', page: () => ProfilePage()),
-              GetPage(name: '/forgotPasswordPage', page: () => ForgotPasswordPage()),
+              GetPage(
+                  name: '/forgotPasswordPage',
+                  page: () => ForgotPasswordPage()),
               GetPage(name: '/analyticsPage', page: () => AnalyticsPage()),
               GetPage(name: '/informationPage', page: () => InformationPage()),
             ],
