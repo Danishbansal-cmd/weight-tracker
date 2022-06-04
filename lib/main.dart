@@ -36,13 +36,14 @@ Future<void> main() async {
 
   // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual);
   runApp(
-    DevicePreview(
-      enabled: true,
-      tools: [
-        ...DevicePreview.defaultTools
-      ],
-      builder: (context) => MyApp(), // Wrap your app
-    ),
+    // DevicePreview(
+    //   enabled: true,
+    //   tools: [
+    //     ...DevicePreview.defaultTools
+    //   ],
+      // builder: (context) => 
+      MyApp(), // Wrap your app
+    // ),
   );
 }
 
@@ -74,21 +75,21 @@ class MyApp extends StatelessWidget {
             getPages: [
               GetPage(
                   name: '/onboardingPages',
-                  page: () => const OnboardingPages()),
-              GetPage(name: '/firstPage', page: () => const FirstPage()),
-              GetPage(name: '/loginPage', page: () => LoginPage()),
-              GetPage(name: '/signupPage', page: () => const SignupPage()),
-              GetPage(name: '/homePage', page: () => const HomePage()),
-              GetPage(name: '/settingsPage', page: () => SettingsPage()),
+                  page: () => const OnboardingPages(),transition: Transition.leftToRight,),
+              GetPage(name: '/firstPage', page: () => const FirstPage(),transition: Transition.leftToRight,),
+              GetPage(name: '/loginPage', page: () => LoginPage(),transition: Transition.leftToRight,),
+              GetPage(name: '/signupPage', page: () => const SignupPage(),transition: Transition.leftToRight,),
+              GetPage(name: '/homePage', page: () => const HomePage(),transition: Transition.leftToRight,),
+              GetPage(name: '/settingsPage', page: () => SettingsPage(),transition: Transition.leftToRight,),
               GetPage(
                   name: '/bodyMassIndexPage',
-                  page: () => const BodyMassIndexPage()),
-              GetPage(name: '/profilePage', page: () => ProfilePage()),
+                  page: () => const BodyMassIndexPage(),transition: Transition.leftToRight,),
+              GetPage(name: '/profilePage', page: () => ProfilePage(),transition: Transition.leftToRight,),
               GetPage(
                   name: '/forgotPasswordPage',
-                  page: () => ForgotPasswordPage()),
-              GetPage(name: '/analyticsPage', page: () => AnalyticsPage()),
-              GetPage(name: '/informationPage', page: () => InformationPage()),
+                  page: () => ForgotPasswordPage(),transition: Transition.leftToRight,),
+              GetPage(name: '/analyticsPage', page: () => AnalyticsPage(),transition: Transition.leftToRight,),
+              GetPage(name: '/informationPage', page: () => InformationPage(),transition: Transition.leftToRight,),
             ],
           );
         },
