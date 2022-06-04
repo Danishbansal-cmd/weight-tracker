@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:try1_something/functions/decision_tree.dart';
 import 'package:try1_something/pages/analytics_page.dart';
 import 'package:try1_something/pages/body_mass_index.dart';
+import 'package:try1_something/pages/email_sent_successfully_page.dart';
 import 'package:try1_something/pages/first_page.dart';
 import 'package:try1_something/pages/forgot_password_page.dart';
 import 'package:try1_something/pages/information_page.dart';
@@ -90,6 +91,7 @@ class MyApp extends StatelessWidget {
                   page: () => ForgotPasswordPage(),transition: Transition.leftToRight,),
               GetPage(name: '/analyticsPage', page: () => AnalyticsPage(),transition: Transition.leftToRight,),
               GetPage(name: '/informationPage', page: () => InformationPage(),transition: Transition.leftToRight,),
+              GetPage(name: '/emailSentSuccessfullyPage', page: () => EmailSentSuccessfullyPage(),transition: Transition.leftToRight,),
             ],
           );
         },
