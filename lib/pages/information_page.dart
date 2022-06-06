@@ -70,7 +70,7 @@ class _InformationPageState extends State<InformationPage> {
                                         Theme.of(context).textTheme.headline4,
                                   ),
                                   const SizedBox(
-                                    height: 20,
+                                    height: 15,
                                   ),
                                   //text
                                   const SizedBox(
@@ -81,40 +81,68 @@ class _InformationPageState extends State<InformationPage> {
                                     ),
                                   ),
                                   const SizedBox(
-                                    height: 20,
+                                    height: 35,
                                   ),
                                   //image row
-                                  Container(
-                                    // color: Colors.red,
-                                    // padding: const EdgeInsets.symmetric(horizontal: 30,),
-                                    child: Row(
-                                      children: [
-                                        imageBox("assets/gender/female.png"),
-                                        imageBox("assets/gender/male.png"),
-                                      ],
-                                    ),
+                                  Row(
+                                    children: [
+                                      imageBox(path: "assets/gender/female.png"),
+                                      imageBox(path: "assets/gender/male.png"),
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 15,
                                   ),
                                   //male and female buttons row
-                                  Container(
-                                    color: Colors.red,
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        InkWell(
-                                          onTap: (){
-                                            informationPageController.setFemalValueSelected(true);
-                                          },
-                                          child: maleFemaleButtons(
-                                              informationPageController
-                                                  .getFemaleValueSelected,
-                                              "Female"),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      InkWell(
+                                        onTap: () {
+                                          informationPageController
+                                              .setFemalValueSelected(true);
+                                        },
+                                        child: Stack(
+                                          children: [
+                                            maleFemaleMainButtons("Female"),
+                                            Obx(
+                                              () => Visibility(
+                                                visible:
+                                                    informationPageController
+                                                        .getFemaleValueSelected,
+                                                child:
+                                                    maleFemaleCheckboxButtons(),
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                        maleFemaleButtons(
-                                            informationPageController
-                                                .getMaleValueSelected,
-                                            "Male"),
-                                      ],
-                                    ),
+                                      ),
+                                      InkWell(
+                                        onTap: () {
+                                          informationPageController
+                                              .setMaleValueSelected(true);
+                                        },
+                                        child: Stack(
+                                          children: [
+                                            maleFemaleMainButtons("Male"),
+                                            Obx(
+                                              () => Visibility(
+                                                visible:
+                                                    informationPageController
+                                                        .getMaleValueSelected,
+                                                child:
+                                                    maleFemaleCheckboxButtons(),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      // maleFemaleButtons(
+                                      //     informationPageController
+                                      //         .getMaleValueSelected,
+                                      //     "Male"),
+                                    ],
                                   ),
                                 ],
                               ),
@@ -210,7 +238,7 @@ class _InformationPageState extends State<InformationPage> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     //testing image
-                                    Image.asset("assets/gender/male.png"),
+                                    informationPageController.getFemaleValueSelected ? imageBox(path: "assets/gender/female.png") : imageBox(path: "assets/gender/male.png"),
                                     Text(
                                       'Your Body Mass Index is',
                                       style:
@@ -259,7 +287,7 @@ class _InformationPageState extends State<InformationPage> {
                           child: InkWell(
                             onTap: () {
                               print('asfsdf');
-                              if (_currentIndex == 0) {
+                              if (_currentIndex != 2) {
                                 setState(() {
                                   _controller!.nextPage(
                                     duration: const Duration(
@@ -269,7 +297,7 @@ class _InformationPageState extends State<InformationPage> {
                                   );
                                 });
                               }
-                              if (_currentIndex == 1) {
+                              if (_currentIndex == 2) {
                                 FirebaseFirestore.instance
                                     .collection("users")
                                     .doc(FirebaseAuth.instance.currentUser!.uid)
@@ -278,6 +306,7 @@ class _InformationPageState extends State<InformationPage> {
                                     .update({
                                   'height':
                                       informationPageController.getHeightValue,
+                                      'gender':informationPageController.getFemaleValueSelected ? 'Female' : 'Male',
                                 });
                                 homePageController.addWeight(
                                     (informationPageController.getWeightValue)
@@ -295,7 +324,7 @@ class _InformationPageState extends State<InformationPage> {
                               decoration: BoxDecoration(),
                               child: Center(
                                 child: Text(
-                                  _currentIndex == 0 ? 'Next' : 'Continue',
+                                  _currentIndex != 2 ? 'Next' : 'Continue',
                                   style: Theme.of(context).textTheme.headline2,
                                 ),
                               ),
@@ -314,7 +343,7 @@ class _InformationPageState extends State<InformationPage> {
     );
   }
 
-  Widget imageBox(String path) {
+  Widget imageBox({required String path}) {
     return SizedBox(
       width: (MediaQuery.of(context).size.width - 60) / 2,
       height: (MediaQuery.of(context).size.width - 60),
@@ -327,48 +356,40 @@ class _InformationPageState extends State<InformationPage> {
     );
   }
 
-  Widget maleFemaleButtons(bool isSelectedBool, String genderName) {
-    return Stack(
-      children: [
-        //main button
-        Container(
-          height: 55,
-          width: (MediaQuery.of(context).size.width - 75) / 2,
-          decoration: BoxDecoration(
-            color: Colors.black,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Center(
-            child: Text(
-              genderName,
-              style: Theme.of(context).textTheme.button!.copyWith(
-                    letterSpacing: 0.2,
-                    fontSize: 22,
-                  ),
-            ),
-          ),
-        ),
-        //selected positioned check button
-        Obx(
-          () => Visibility(
-            visible: isSelectedBool,
-            child: Positioned(
-              right: 20,
-              top: 17,
-              child: SizedBox(
-                height: 20,
-                width: 20,
-                child: FittedBox(
-                  fit: BoxFit.fill,
-                  child: Image.asset(
-                    "assets/icons/check.png",
-                  ),
-                ),
+  Widget maleFemaleMainButtons(String genderName) {
+    return Container(
+      height: 55,
+      width: (MediaQuery.of(context).size.width - 75) / 2,
+      decoration: BoxDecoration(
+        color: Colors.black,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Center(
+        child: Text(
+          genderName,
+          style: Theme.of(context).textTheme.button!.copyWith(
+                letterSpacing: 0.2,
+                fontSize: 22,
               ),
-            ),
+        ),
+      ),
+    );
+  }
+
+  Widget maleFemaleCheckboxButtons() {
+    return Positioned(
+      right: 10,
+      top: 17,
+      child: SizedBox(
+        height: 20,
+        width: 20,
+        child: FittedBox(
+          fit: BoxFit.fill,
+          child: Image.asset(
+            "assets/icons/check.png",
           ),
         ),
-      ],
+      ),
     );
   }
 }
@@ -376,7 +397,7 @@ class _InformationPageState extends State<InformationPage> {
 class InformationPageController extends GetxController {
   RxInt _heightValue = 170.obs;
   RxInt _weightValue = 120.obs;
-  RxBool _femaleValueSelected = false.obs;
+  RxBool _femaleValueSelected = true.obs;
   RxBool _maleValueSelected = false.obs;
 
   //getters and setters
@@ -391,6 +412,7 @@ class InformationPageController extends GetxController {
   bool get getFemaleValueSelected {
     return _femaleValueSelected.value;
   }
+
   bool get getMaleValueSelected {
     return _maleValueSelected.value;
   }
@@ -407,6 +429,7 @@ class InformationPageController extends GetxController {
     _femaleValueSelected.value = false;
     _maleValueSelected.value = value;
   }
+
   setFemalValueSelected(bool value) {
     _maleValueSelected.value = false;
     _femaleValueSelected.value = value;
