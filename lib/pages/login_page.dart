@@ -47,6 +47,12 @@ class _LoginPageState extends State<LoginPage> {
   //   });
   // }
 
+  int testingHeightValue = 0;
+  // CollectionReference firestoreReference = FirebaseFirestore.instance
+  //     .collection("users")
+  //     .doc(FirebaseAuth.instance.currentUser!.uid)
+  //     .collection("moreInfo");
+
   @override
   void initState() {
     super.initState();
@@ -327,53 +333,69 @@ class _LoginPageState extends State<LoginPage> {
       setState(() {
         changeButton = true;
       });
-      await _auth
-          .signInWithEmailAndPassword(email: emails, password: passwords)
-          .then(
-              (uid) => {
-                    changeButton = true,
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                          "Signed in successfully",
-                        ),
-                      ),
-                    ),
-                    FirebaseFirestore.instance
-                        .collection("users")
-                        .doc(FirebaseAuth.instance.currentUser!.uid)
-                        .collection('moreinfo')
-                        .doc('aboutdata')
-                        .get()
-                        .then((value) {
-                      loginPageStateController.testing = value['height'];
-                    }),
-                    // print('statement ${checkFirstTimeUsingHeight}'),
-                    loginPageStateController.testing.value == null ||
-                            loginPageStateController.testing.value == 0
-                        ? Get.offNamed('/informationPage')
-                        : Get.offNamed('/homePage'),
-                    loginPageStateController.loginEmailValue.value = '',
-                  }, onError: (e) {
-        print('this is the error e $e');
-      }).catchError((Object error) {
-        print("cath error works");
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              "Wrong username or password",
+      try {
+        final User user = (await _auth.signInWithEmailAndPassword(
+                email: emails, password: passwords))
+            .user!;
+        if (user != null) {
+          setState(() async {
+            final snapshot = await FirebaseFirestore.instance
+                .collection("users")
+                .doc(FirebaseAuth.instance.currentUser!.uid)
+                .collection("moreinfo").get();
+            if (snapshot.docs.length == 0) {
+              print("snapshot ${snapshot}");
+              print("i run with 0");
+              Get.offNamed('/informationPage');
+            } else if (snapshot.docChanges.length != 0) {
+              print("snapshot ${snapshot}");
+              print("i run with 1");
+              await FirebaseFirestore.instance
+                  .collection("users")
+                  .doc(FirebaseAuth.instance.currentUser!.uid)
+                  .collection("moreinfo")
+                  .doc('aboutdata')
+                  .get()
+                  .then((value) {
+                testingHeightValue = value['height'];
+              });
+              testingHeightValue == null || testingHeightValue == 0
+                  ? Get.offNamed('/informationPage')
+                  : Get.offNamed('/homePage');
+            }
+          });
+          loginPageStateController.loginEmailValue.value = '';
+        }
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'user-not-found') {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                "user not found",
+              ),
             ),
-          ),
-        );
-        setState(() {
-          changeButton = false;
-        });
-      });
+          );
+          setState(() {
+            changeButton = false;
+          });
+        } else if (e.code == "wrong-password") {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                "Wrong username or password",
+              ),
+            ),
+          );
+          setState(() {
+            changeButton = false;
+          });
+        }
+      }
     }
   }
 }
 
 class LoginPageState extends GetxController {
-  RxString loginEmailValue = ''.obs; 
+  RxString loginEmailValue = ''.obs;
   RxInt testing = 0.obs;
 }

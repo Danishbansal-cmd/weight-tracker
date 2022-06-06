@@ -67,6 +67,7 @@ class _SignupPageState extends State<SignupPage> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
+          foregroundColor: Colors.red,
           toolbarHeight: 150,
           backgroundColor: _colorScheme.background,
           automaticallyImplyLeading: false,
@@ -103,9 +104,9 @@ class _SignupPageState extends State<SignupPage> {
             key: _formKey,
             child: Container(
               // color: Colors.yellow,
-              height: MediaQuery.of(context).size.height -
-                  135 -
-                  (MediaQuery.of(context).viewPadding.top),
+              // height: MediaQuery.of(context).size.height -
+              //     150 -
+              //     (MediaQuery.of(context).viewPadding.top),
               width: MediaQuery.of(context).size.width,
               padding: EdgeInsets.zero,
               child: Column(

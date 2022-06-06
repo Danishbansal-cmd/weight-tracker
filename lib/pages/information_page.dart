@@ -86,7 +86,8 @@ class _InformationPageState extends State<InformationPage> {
                                   //image row
                                   Row(
                                     children: [
-                                      imageBox(path: "assets/gender/female.png"),
+                                      imageBox(
+                                          path: "assets/gender/female.png"),
                                       imageBox(path: "assets/gender/male.png"),
                                     ],
                                   ),
@@ -238,7 +239,12 @@ class _InformationPageState extends State<InformationPage> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     //testing image
-                                    informationPageController.getFemaleValueSelected ? imageBox(path: "assets/gender/female.png") : imageBox(path: "assets/gender/male.png"),
+                                    informationPageController
+                                            .getFemaleValueSelected
+                                        ? imageBox(
+                                            path: "assets/gender/female.png")
+                                        : imageBox(
+                                            path: "assets/gender/male.png"),
                                     Text(
                                       'Your Body Mass Index is',
                                       style:
@@ -303,10 +309,14 @@ class _InformationPageState extends State<InformationPage> {
                                     .doc(FirebaseAuth.instance.currentUser!.uid)
                                     .collection('moreinfo')
                                     .doc('aboutdata')
-                                    .update({
+                                    .set({
                                   'height':
-                                      informationPageController.getHeightValue,
-                                      'gender':informationPageController.getFemaleValueSelected ? 'Female' : 'Male',
+                                      informationPageController.getHeightValue *
+                                          0.453592,
+                                  'gender': informationPageController
+                                          .getFemaleValueSelected
+                                      ? 'Female'
+                                      : 'Male',
                                 });
                                 homePageController.addWeight(
                                     (informationPageController.getWeightValue)
