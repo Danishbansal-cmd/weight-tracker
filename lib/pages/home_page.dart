@@ -4,6 +4,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
@@ -304,24 +305,29 @@ class _HomePageState extends State<HomePage> {
                               var removeZero;
                               removeZero = removeDotZeroFunction(
                                   item['weight'].toString());
-                              return Dismissible(
-                                key: UniqueKey(),
-                                background: Container(
-                                  color: Colors.red,
+                              return Slidable(
+                                endActionPane: ActionPane(
+                                  extentRatio: 0.3,
+                                  motion: const ScrollMotion(),
+                                  children: [
+                                    SlidableAction(
+                                      onPressed: (context) {
+                                        setState(() {
+                                          FirebaseFirestore.instance
+                                              .collection("users")
+                                              .doc(user!.uid)
+                                              .collection("weights")
+                                              .doc(item.id)
+                                              .delete();
+                                        });
+                                      },
+                                      backgroundColor: Color(0xFFFE4A49),
+                                      foregroundColor: Colors.white,
+                                      icon: Icons.delete,
+                                      label: 'Delete',
+                                    ),
+                                  ],
                                 ),
-                                onDismissed: (direction) {
-                                  setState(() {
-                                    FirebaseFirestore.instance
-                                        .collection("users")
-                                        .doc(user!.uid)
-                                        .collection("weights")
-                                        .doc(item.id)
-                                        .delete()
-                                        .then((value) => print(
-                                            "success\nsuccess\nsuccesnsuccess"));
-                                  });
-                                },
-                                direction: DismissDirection.endToStart,
                                 child: Container(
                                   margin: const EdgeInsets.symmetric(
                                     vertical: 3,
